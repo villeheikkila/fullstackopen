@@ -40,7 +40,7 @@ const Total = (props) => {
 
 
 const App = () => {
-    const course = {
+    const kurssi = {
         name: 'Half Stack -sovelluskehitys',
         parts: [
           {
@@ -60,9 +60,9 @@ const App = () => {
 
   return (
     <div>
-      <Header course={course.name} />
-      <Content content={course.parts} />
-      <Total total={course.parts} />
+      <Header course={kurssi.name} />
+      <Content content={kurssi.parts} />
+      <Total total={kurssi.parts} />
     </div>
   )
 }
