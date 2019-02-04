@@ -29,15 +29,15 @@ const App = () => {
     return () => {
         if (window.confirm(`Poistetaanko ${name} ?`)) {
             personDB.deletePerson(id).then(response => {
-                setPersons(persons.filter(n => n.id !== id));
+                const persons = persons.filter(n => n.id !== id);
                 setErrorMessage(`Poistettiin ${name}`)
                 setPersons(persons)
                 setNewName('')
                 setNewNumber('')
             });
             setTimeout(() => { 
-                setErrorMessage(null)                
                 window.location.reload();
+                setErrorMessage(null)                
             }, 3000);
         }
     }
@@ -59,7 +59,19 @@ const App = () => {
     }
 
     if (persons.filter(person => person.name === personObject.name).length > 0)  {
-        window.alert(`${newName} on jo luettelossa`)
+        if ( window.confirm(`${personObject.name} on jo luettelossa, korvataanko vanha numero uudella?`)) {
+            const person = persons.find( n => n.name === newName );
+            const update = { ...person, number: newNumber };
+            personDB.update(person.id, update).then(e => { const persons = persons.filter(n => n.name !== personObject.name)})
+            setPersons(persons.concat(personObject))
+            setErrorMessage(`Muutettiin ${personObject.name} numero`)
+            setNewName('')
+            setNewNumber('')
+            setTimeout(() => { 
+                window.location.reload();
+                setErrorMessage(null) 
+            }, 3000);
+        }
     } else {
         personDB.create(personObject).then(response => {
             setPersons(persons.concat(personObject))
@@ -68,7 +80,7 @@ const App = () => {
             setNewNumber('')
         });
         setTimeout(() => { setErrorMessage(null) }, 3000);
-  }
+    }
 }
 
   return (
