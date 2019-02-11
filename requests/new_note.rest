@@ -1,7 +1,0 @@
-POST http://localhost:3001/persons
-Content-Type: application/json
-
-{
-  "content": "VS:n REST-client on huippu",
-  "important": true
-}
