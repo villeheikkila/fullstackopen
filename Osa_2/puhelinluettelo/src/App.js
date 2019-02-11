@@ -28,15 +28,14 @@ const App = () => {
   const handleDeletePerson = (name, id) => {
     return () => {
         if (window.confirm(`Poistetaanko ${name} ?`)) {
-            personDB.deletePerson(id).then(response => {
-                const persons = persons.filter(n => n.id !== id);
+            personDB.deletePerson(id)
+            .then(() => {
+                setPersons(persons.filter(n => n.id !== id))
                 setErrorMessage(`Poistettiin ${name}`)
-                setPersons(persons)
                 setNewName('')
                 setNewNumber('')
             });
             setTimeout(() => { 
-                window.location.reload();
                 setErrorMessage(null)                
             }, 3000);
         }
@@ -60,26 +59,24 @@ const App = () => {
 
     if (persons.filter(person => person.name === personObject.name).length > 0)  {
         if ( window.confirm(`${personObject.name} on jo luettelossa, korvataanko vanha numero uudella?`)) {
-            const person = persons.find( n => n.name === newName );
-            const update = { ...person, number: newNumber };
-            personDB.update(person.id, update).then(e => { 
-                const persons = persons.filter(n => n.name !== personObject.name)
-            })
-            .catch(error => {
+            const previousPerson = persons.find(n => n.name === newName)
+            personDB.replace({...previousPerson, number: newNumber })
+            .then(updatedPerson => {
+                setPersons(persons.map(n => n.name === newName ? updatedPerson : n))
+            }).catch(error => {
                 setErrorMessage(error.response.data)
-              })
+            })
             setPersons(persons.concat(personObject))
             setErrorMessage(`Muutettiin ${personObject.name} numero`)
             setNewName('')
             setNewNumber('')
             setTimeout(() => { 
-                window.location.reload();
                 setErrorMessage(null) 
             }, 3000);
         }
     } else {
-        personDB.create(personObject).then(response => {
-            setPersons(persons.concat(personObject))
+        personDB.create(personObject).then(newPerson => {
+            setPersons(persons.concat(newPerson))
             setErrorMessage(`Lisättiin ${personObject.name}`)
             setNewName('')
             setNewNumber('')
