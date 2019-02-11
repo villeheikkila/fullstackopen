@@ -34,12 +34,11 @@ if ((nameInput != undefined) && (numberInput != undefined)) {
         console.log(`lisätään ${nameInput} numero ${numberInput} luetteloon`)
         mongoose.connection.close()
     })
-}
-
-
-Person.find({}).then(result => {
-    result.forEach(person => {
-        console.log(person.name + " " + person.number)
+} else {
+    Person.find({}).then(result => {
+        result.forEach(person => {
+            console.log(person.name + " " + person.number)
+        })
+        mongoose.connection.close()
     })
-    mongoose.connection.close()
-})
+}
