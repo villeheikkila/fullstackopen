@@ -62,7 +62,12 @@ const App = () => {
         if ( window.confirm(`${personObject.name} on jo luettelossa, korvataanko vanha numero uudella?`)) {
             const person = persons.find( n => n.name === newName );
             const update = { ...person, number: newNumber };
-            personDB.update(person.id, update).then(e => { const persons = persons.filter(n => n.name !== personObject.name)})
+            personDB.update(person.id, update).then(e => { 
+                const persons = persons.filter(n => n.name !== personObject.name)
+            })
+            .catch(error => {
+                setErrorMessage(error.response.data)
+              })
             setPersons(persons.concat(personObject))
             setErrorMessage(`Muutettiin ${personObject.name} numero`)
             setNewName('')
@@ -78,7 +83,11 @@ const App = () => {
             setErrorMessage(`Lisättiin ${personObject.name}`)
             setNewName('')
             setNewNumber('')
-        });
+        })
+        .catch(error => {
+            setErrorMessage(`${error.response.data.error}`)
+            console.log(error.response.data)
+          });
         setTimeout(() => { setErrorMessage(null) }, 3000);
     }
 }
