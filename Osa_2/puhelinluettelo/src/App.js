@@ -60,7 +60,7 @@ const App = () => {
     if (persons.filter(person => person.name === personObject.name).length > 0)  {
         if ( window.confirm(`${personObject.name} on jo luettelossa, korvataanko vanha numero uudella?`)) {
             const previousPerson = persons.find(n => n.name === newName)
-            personDB.replace({...previousPerson, number: newNumber })
+            personDB.update({...previousPerson, number: newNumber })
             .then(updatedPerson => {
                 setPersons(persons.map(n => n.name === newName ? updatedPerson : n))
             }).catch(error => {
