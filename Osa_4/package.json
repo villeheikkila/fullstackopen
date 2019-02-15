@@ -1,0 +1,29 @@
+{
+  "name": "blogilista",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "watch": "nodemon index.js",
+    "lint": "eslint .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^6.2.0",
+    "express": "^4.16.4",
+    "mongoose": "^5.4.4",
+    "mongoose-unique-validator": "^2.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.12.1",
+    "jest": "^24.1.0",
+    "nodemon": "^1.18.9"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
