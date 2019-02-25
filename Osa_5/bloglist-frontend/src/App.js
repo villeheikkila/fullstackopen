@@ -37,8 +37,8 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username: username.value,
-        password: password.value
+        username: username.olio.value,
+        password: password.olio.value
       })
 
       blogService.setToken(user.token)
@@ -77,9 +77,9 @@ const App = () => {
 
       const blogObject = {
         user: user,
-        title: title.value,
-        author: author.value,
-        url: url.value
+        title: title.olio.value,
+        author: author.olio.value,
+        url: url.olio.value
       }
 
       blogService.create(blogObject).then(blog => {
@@ -108,11 +108,11 @@ const App = () => {
       <h2>log in to application</h2>
       <div>
         käyttäjätunnus
-        <input  {...username} />
+        <input  {...username.olio} />
       </div>
       <div>
         salasana
-        <input  {...password} />
+        <input  {...password.olio} />
       </div>
       <button type="submit">kirjaudu</button>
     </form>
@@ -130,15 +130,15 @@ const App = () => {
     <form onSubmit={addBlog}>
       <div>
       title
-        <input  {...title} />
+        <input  {...title.olio} />
       </div>
       <div>
       author
-        <input  {...author} />
+        <input  {...author.olio} />
       </div>
       <div>
       url
-        <input  {...url} />
+        <input  {...url.olio} />
       </div>
       <button type="submit">create</button>
     </form>
@@ -152,7 +152,7 @@ const App = () => {
         loginForm() :
         <div>
           <h2>blogs</h2>
-          <p>{username.value} logged in</p>
+          <p>{username.olio.value} logged in</p>
           <button onClick={handleLogout}> logout</button>
           {blogForm()}
           <br />
