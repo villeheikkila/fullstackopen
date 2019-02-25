@@ -10,11 +10,16 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [url, setUrl] = useState('')
-  const [author, setAuthor] = useState('')
+  //const [username, setUsername] = useState('')
+  //const [password, setPassword] = useState('')
+  //const [title, setTitle] = useState('')
+  //const [url, setUrl] = useState('')
+  //const [author, setAuthor] = useState('')
+  const username = useField('text')
+  const password = useField('password')
+  const title = useField('text')
+  const url = useField('text')
+  const author = useField('text')
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
@@ -32,7 +37,8 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username, password,
+        username: username.value,
+        password: password.value
       })
 
       blogService.setToken(user.token)
@@ -40,13 +46,15 @@ const App = () => {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 
       setUser(user)
-      setUsername('')
-      setPassword('')
+      //setUsername('')
+      //setPassword('')
+      username.reset()
+      password.reset()
     } catch (exception) {
       setErrorMessage('wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 3000)
     }
   }
 
@@ -59,7 +67,7 @@ const App = () => {
       setErrorMessage('ulos kirjautuminen ei onnistu')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 3000)
     }
   }
 
@@ -69,16 +77,19 @@ const App = () => {
 
       const blogObject = {
         user: user,
-        title: title,
-        author: author,
-        url: url
+        title: title.value,
+        author: author.value,
+        url: url.value
       }
 
       blogService.create(blogObject).then(blog => {
         setBlogs(blogs.concat(blog))
-        setAuthor('')
-        setTitle('')
-        setUrl('')
+        //setAuthor('')
+        //setTitle('')
+        //setUrl('')
+        author.reset()
+        title.reset()
+        url.reset()
         setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
       })
       setTimeout(() => {
@@ -97,21 +108,11 @@ const App = () => {
       <h2>log in to application</h2>
       <div>
         käyttäjätunnus
-        <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
+        <input  {...username} />
       </div>
       <div>
         salasana
-        <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
+        <input  {...password} />
       </div>
       <button type="submit">kirjaudu</button>
     </form>
@@ -129,27 +130,15 @@ const App = () => {
     <form onSubmit={addBlog}>
       <div>
       title
-        <input
-          value={title}
-          name="title"
-          onChange={({ target }) => setTitle(target.value)}
-        />
+        <input  {...title} />
       </div>
       <div>
       author
-        <input
-          value={author}
-          name="author"
-          onChange={({ target }) => setAuthor(target.value)}
-        />
+        <input  {...author} />
       </div>
       <div>
       url
-        <input
-          value={url}
-          name="newBlogURL"
-          onChange={({ target }) => setUrl(target.value)}
-        />
+        <input  {...url} />
       </div>
       <button type="submit">create</button>
     </form>
@@ -163,7 +152,7 @@ const App = () => {
         loginForm() :
         <div>
           <h2>blogs</h2>
-          <p>{user.name} logged in</p>
+          <p>{username.value} logged in</p>
           <button onClick={handleLogout}> logout</button>
           {blogForm()}
           <br />
