@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
+
 export const useField = (type) => {
   const [value, setValue] = useState('')
-
   const onChange = (event) => {
     setValue(event.target.value)
   }
@@ -10,11 +10,13 @@ export const useField = (type) => {
   const reset = () => {
     setValue('')
   }
-
+  const olio = {
+    type: type,
+    value: value,
+    onChange: onChange
+  }
   return {
-    type,
-    value,
-    onChange,
+    olio,
     reset
   }
 }
