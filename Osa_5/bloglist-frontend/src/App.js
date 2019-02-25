@@ -16,6 +16,7 @@ const App = () => {
   const url = useField('text')
   const author = useField('text')
 
+
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
@@ -109,7 +110,7 @@ const App = () => {
   )
 
   const blogForm = () => (
-    <div>
+    <div >
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
