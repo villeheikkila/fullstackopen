@@ -10,11 +10,6 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
-  //const [username, setUsername] = useState('')
-  //const [password, setPassword] = useState('')
-  //const [title, setTitle] = useState('')
-  //const [url, setUrl] = useState('')
-  //const [author, setAuthor] = useState('')
   const username = useField('text')
   const password = useField('password')
   const title = useField('text')
@@ -46,8 +41,6 @@ const App = () => {
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
 
       setUser(user)
-      //setUsername('')
-      //setPassword('')
       username.reset()
       password.reset()
     } catch (exception) {
@@ -84,9 +77,6 @@ const App = () => {
 
       blogService.create(blogObject).then(blog => {
         setBlogs(blogs.concat(blog))
-        //setAuthor('')
-        //setTitle('')
-        //setUrl('')
         author.reset()
         title.reset()
         url.reset()
@@ -152,7 +142,7 @@ const App = () => {
         loginForm() :
         <div>
           <h2>blogs</h2>
-          <p>{username.olio.value} logged in</p>
+          <p>{user.username} logged in</p>
           <button onClick={handleLogout}> logout</button>
           {blogForm()}
           <br />
