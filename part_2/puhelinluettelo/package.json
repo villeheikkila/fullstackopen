@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.18.0",
-    "react": "^16.8.0-alpha.0",
-    "react-dom": "^16.8.0-alpha.0",
-    "react-scripts": "2.1.3"
+    "axios": "^0.19.0",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "3.0.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -25,6 +25,6 @@
     "not op_mini all"
   ],
   "devDependencies": {
-    "json-server": "^0.14.2"
+    "json-server": "^0.15.0"
   }
 }
