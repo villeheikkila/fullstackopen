@@ -8,7 +8,7 @@ const Button = ({ handleClick, text }) => (
 const App = props => {
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(new Uint8Array(6));
-  const [mostVoted, setMostVoted] = useState(0);
+  const [mostVoted, setMostVoted] = useState("");
 
   const handleSelectedClick = () => {
     setSelected(Math.floor(Math.random() * anecdotes.length));
