@@ -11,10 +11,6 @@ function App() {
     setNewSearch(event.target.value);
   };
 
-  const show = event => {
-    console.log(event.target.value.name);
-  };
-
   useEffect(() => {
     getAll().then(response => setCountries(response));
   }, []);
@@ -25,7 +21,7 @@ function App() {
         newSearch={newSearch}
         handleSearchChange={handleSearchChange}
       />
-      <Countries countries={countries} newSearch={newSearch} show={show} />
+      <Countries countries={countries} newSearch={newSearch} />
     </div>
   );
 }
