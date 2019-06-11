@@ -4,32 +4,33 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import  { useField } from './hooks'
+import { useField } from './hooks'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [errorMessage, setErrorMessage] = useState(null)
   const [user, setUser] = useState(null)
+  const [update, setUpdate] = useState(null)
   const username = useField('text')
   const password = useField('password')
   const title = useField('text')
   const url = useField('text')
   const author = useField('text')
 
-
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
-      blogService.getAll().then(blogs =>
-        setBlogs( blogs )
-      )
+      blogService.getAll().then(blogs => setBlogs(blogs))
     }
   }, [])
 
+  useEffect(() => {
+    blogService.getAll().then(blogs => setBlogs(blogs))
+  }, [update])
 
-  const handleLogin = async (event) => {
+  const handleLogin = async event => {
     event.preventDefault()
     try {
       const user = await loginService.login({
@@ -52,7 +53,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = async (event) => {
+  const handleLogout = async event => {
     event.preventDefault()
     try {
       window.localStorage.removeItem('loggedBlogAppUser')
@@ -65,10 +66,9 @@ const App = () => {
     }
   }
 
-  const addBlog  = async (event) => {
+  const addBlog = async event => {
     event.preventDefault()
     try {
-
       const blogObject = {
         user: user,
         title: title.olio.value,
@@ -81,12 +81,13 @@ const App = () => {
         author.reset()
         title.reset()
         url.reset()
-        setErrorMessage(`a new blog ${blogObject.title} by ${blogObject.author} added`)
+        setErrorMessage(
+          `a new blog ${blogObject.title} by ${blogObject.author} added`
+        )
       })
       setTimeout(() => {
         setErrorMessage(null)
       }, 3000)
-
     } catch (exception) {
       setErrorMessage('blogin lisääminen ei onnistunut')
       setTimeout(() => {
@@ -94,64 +95,65 @@ const App = () => {
       }, 3000)
     }
   }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <h2>log in to application</h2>
       <div>
         käyttäjätunnus
-        <input  {...username.olio} />
+        <input {...username.olio} />
       </div>
       <div>
         salasana
-        <input  {...password.olio} />
+        <input {...password.olio} />
       </div>
       <button type="submit">kirjaudu</button>
     </form>
   )
 
   const blogForm = () => (
-    <div >
-      {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} />
-      )}
+    <div>
+      {blogs
+        .sort((a, b) => b.likes - a.likes)
+        .map(blog => (
+          <Blog key={blog.id} blog={blog} setUpdate={setUpdate} />
+        ))}
     </div>
   )
 
   const newBlogFrom = () => (
     <form onSubmit={addBlog}>
       <div>
-      title
-        <input  {...title.olio} />
+        title
+        <input {...title.olio} />
       </div>
       <div>
-      author
-        <input  {...author.olio} />
+        author
+        <input {...author.olio} />
       </div>
       <div>
-      url
-        <input  {...url.olio} />
+        url
+        <input {...url.olio} />
       </div>
       <button type="submit">create</button>
     </form>
   )
 
-
   return (
     <div>
       <Notification message={errorMessage} />
-      {user === null ?
-        loginForm() :
+      {user === null ? (
+        loginForm()
+      ) : (
         <div>
           <h2>blogs</h2>
           <p>{user.username} logged in</p>
           <button onClick={handleLogout}> logout</button>
           {blogForm()}
           <br />
-          <Togglable buttonLabel='Create New Blog'>
-            {newBlogFrom()}
-          </Togglable>
+          <Togglable buttonLabel="Create New Blog">{newBlogFrom()}</Togglable>
         </div>
-      }
+      )}
     </div>
   )
 }

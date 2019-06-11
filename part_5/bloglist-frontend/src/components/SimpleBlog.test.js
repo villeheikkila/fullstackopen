@@ -17,32 +17,28 @@ describe.only('<Blog />', () => {
       likes: 1
     }
     mockHandler = jest.fn()
-    component = render(
-      <SimpleBlog blog={blog}
-        onClick={mockHandler}
-      />)
-
+    component = render(<SimpleBlog blog={blog} onClick={mockHandler} />)
   })
 
-  it ('renders its title', () => {
+  it('renders its title', () => {
     const div = component.container.querySelector('.titleauthor')
 
     expect(div).toHaveTextContent('titteli')
   })
 
-  it ('renders its author', () => {
+  it('renders its author', () => {
     const div = component.container.querySelector('.titleauthor')
 
     expect(div).toHaveTextContent('authori')
   })
 
-  it ('renders its likes', () => {
+  it('renders its likes', () => {
     const div = component.container.querySelector('.likes')
 
     expect(div).toHaveTextContent(1)
   })
 
-  it('like clicked twice works ',  () => {
+  it('like clicked twice works ', () => {
     const button = component.getByText('like')
     fireEvent.click(button)
     fireEvent.click(button)
