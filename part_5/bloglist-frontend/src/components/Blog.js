@@ -9,7 +9,7 @@ const blogStyle = {
   marginBottom: 5
 }
 
-const Blog = ({ blog, setUpdate }) => {
+const Blog = ({ blog, setUpdate, user }) => {
   const [visible, setVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
@@ -23,6 +23,15 @@ const Blog = ({ blog, setUpdate }) => {
     setUpdate(Math.floor(Math.random() * 100))
   }
 
+  const remove = async event => {
+    event.preventDefault()
+    if (window.confirm(`remove blog ${blog.title}) by ${blog.author}`)) {
+      blogService.setToken(user.token)
+      await blogService.remove(blog.id, user.token)
+      setUpdate(Math.floor(Math.random() * 100))
+    }
+  }
+
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
@@ -31,12 +40,15 @@ const Blog = ({ blog, setUpdate }) => {
         </div>
       </div>
       <div style={showWhenVisible}>
+        {blog.title} <br />
+        {blog.url} <br />
         <div onClick={like}>
-          {blog.title} <br />
-          {blog.author} <br />
-          {blog.url} <br />
-          {blog.likes}
+          {blog.likes} likes
           <button type="submit">like</button>
+        </div>
+        <div onClick={remove}>
+          added by {blog.author}
+          <button type="submit">remove</button>
         </div>
       </div>
     </div>
