@@ -11,9 +11,19 @@ const blogStyle = {
 
 const Blog = ({ blog, setUpdate, user }) => {
   const [visible, setVisible] = useState(false)
+  const [removeVisible, setRemoveVisible] = useState(false)
 
   const hideWhenVisible = { display: visible ? 'none' : '' }
   const showWhenVisible = { display: visible ? '' : 'none' }
+
+  const hideWhenNotOwned = { display: removeVisible ? 'none' : '' }
+
+  const rules = () => {
+    setVisible(true)
+    if (blog.user.username !== user.username) {
+      setRemoveVisible(true)
+    }
+  }
 
   const like = async event => {
     event.preventDefault()
@@ -25,6 +35,7 @@ const Blog = ({ blog, setUpdate, user }) => {
 
   const remove = async event => {
     event.preventDefault()
+
     if (window.confirm(`remove blog ${blog.title}) by ${blog.author}`)) {
       blogService.setToken(user.token)
       await blogService.remove(blog.id, user.token)
@@ -35,7 +46,7 @@ const Blog = ({ blog, setUpdate, user }) => {
   return (
     <div style={blogStyle}>
       <div style={hideWhenVisible}>
-        <div onClick={() => setVisible(true)}>
+        <div onClick={rules}>
           {blog.title} {blog.author}
         </div>
       </div>
@@ -46,7 +57,7 @@ const Blog = ({ blog, setUpdate, user }) => {
           {blog.likes} likes
           <button type="submit">like</button>
         </div>
-        <div onClick={remove}>
+        <div onClick={remove} style={hideWhenNotOwned}>
           added by {blog.author}
           <button type="submit">remove</button>
         </div>

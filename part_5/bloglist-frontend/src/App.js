@@ -76,8 +76,8 @@ const App = () => {
         author: author.olio.value,
         url: url.olio.value
       }
-
-      blogService.create(blogObject).then(blog => {
+      const auth = user.token
+      blogService.create(blogObject, auth).then(blog => {
         setBlogs(blogs.concat(blog))
         author.reset()
         title.reset()
