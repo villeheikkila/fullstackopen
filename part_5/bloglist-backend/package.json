@@ -12,20 +12,20 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^3.0.4",
+    "bcrypt": "^3.0.6",
     "cors": "^2.8.5",
-    "dotenv": "^6.2.0",
-    "express": "^4.16.4",
-    "jsonwebtoken": "^8.4.0",
-    "mongoose": "^5.4.4",
-    "mongoose-unique-validator": "^2.0.2"
+    "dotenv": "^8.0.0",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.5.14",
+    "mongoose-unique-validator": "^2.0.3"
   },
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "eslint": "^5.12.1",
-    "jest": "^24.1.0",
-    "nodemon": "^1.18.9",
-    "supertest": "^3.4.2"
+    "eslint": "^5.16.0",
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1",
+    "supertest": "^4.0.2"
   },
   "jest": {
     "testEnvironment": "node"
