@@ -38,6 +38,7 @@ const App = () => {
         password: password.olio.value
       })
 
+      console.log('moi', user.token)
       blogService.setToken(user.token)
 
       window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
@@ -116,7 +117,7 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog => (
-          <Blog key={blog.id} blog={blog} setUpdate={setUpdate} />
+          <Blog key={blog.id} blog={blog} setUpdate={setUpdate} user={user} />
         ))}
     </div>
   )
