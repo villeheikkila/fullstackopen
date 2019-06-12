@@ -98,7 +98,7 @@ const App = () => {
   }
 
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleLogin} className="login">
       <h2>log in to application</h2>
       <div>
         käyttäjätunnus
