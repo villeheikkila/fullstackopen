@@ -44,13 +44,13 @@ const Blog = ({ blog, setUpdate, user }) => {
   }
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="all">
       <div style={hideWhenVisible}>
-        <div onClick={rules}>
+        <div onClick={rules} className="titleauthor">
           {blog.title} {blog.author}
         </div>
       </div>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className="titleauthorlikedelete">
         {blog.title} <br />
         {blog.url} <br />
         <div onClick={like}>
