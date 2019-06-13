@@ -10,8 +10,7 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
-  console.log('body: ', body)
-  console.log('Moi: ', body.title)
+
   if (body.title === undefined || body.url === undefined) {
     return response.status(400).end()
   }
@@ -72,7 +71,6 @@ blogsRouter.delete('/:id', async (request, response, next) => {
   }
   try {
     const blog = await Blog.findById(request.params.id)
-    console.log('blog: ', blog.user.toString())
 
     if (blog.user.toString() === decodedToken.id.toString()) {
       await blog.remove()
