@@ -10,7 +10,12 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response, next) => {
   const body = request.body
-  console.log(request.token)
+  console.log('body: ', body)
+  console.log('Moi: ', body.title)
+  if (body.title === undefined || body.url === undefined) {
+    return response.status(400).end()
+  }
+
   try {
     const decodedToken = jwt.verify(request.token, process.env.SECRET)
 

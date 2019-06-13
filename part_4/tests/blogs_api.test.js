@@ -73,6 +73,51 @@ test('POST /api/blogs works', async () => {
   expect(titles).toContain('Canonical string reduction')
 })
 
+test('POST /api/blogs new blogs has 0 likes if not specified', async () => {
+  const newPost = {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newPost)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  const blog = await Blog.findById({ author: 'Edsger W. Dijkstra' })
+  console.log('blogsAfter: ', blog)
+
+  expect(blog.likes).toBe(0)
+})
+
+test('POST /api/blogs check if title is empty, 400 Bad request is returned', async () => {
+  const newPost = {
+    author: 'Edsger W. Dijkstra',
+    url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+    likes: 1
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newPost)
+    .expect(400)
+})
+
+test('POST /api/blogs check if url is empty, 400 Bad request is returned', async () => {
+  const newPost = {
+    title: 'Canonical string reduction',
+    author: 'Edsger W. Dijkstra',
+    likes: 1
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newPost)
+    .expect(400)
+})
+
 test('POST /api/users with too short password fails', async () => {
   const newUser = {
     username: 'Hessu',
