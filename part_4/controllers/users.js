@@ -7,7 +7,9 @@ usersRouter.post('/', async (request, response, next) => {
     const body = request.body
 
     if (body.password === undefined || body.password.length < 3) {
-      return response.status(400).json({ error: 'password is too short or missing' })
+      return response
+        .status(400)
+        .json({ error: 'password is too short or missing' })
     }
 
     const saltRounds = 10
@@ -16,7 +18,7 @@ usersRouter.post('/', async (request, response, next) => {
     const user = new User({
       username: body.username,
       name: body.name,
-      passwordHash,
+      passwordHash
     })
 
     const savedUser = await user.save()
@@ -29,8 +31,7 @@ usersRouter.post('/', async (request, response, next) => {
 
 usersRouter.get('/', async (request, response, next) => {
   try {
-    const users = await User
-      .find({}).populate('blogs')
+    const users = await User.find({}).populate('blogs')
     response.json(users)
   } catch (exception) {
     next(exception)
