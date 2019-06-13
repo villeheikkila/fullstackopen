@@ -63,7 +63,7 @@ const blogs = [
 ]
 
 describe('totalLikes', () => {
-  test('returns total likes in all blogs', () => {
+  test('return total likes in all blogs', () => {
     expect(listHelper.totalLikes(blogs)).toBe(36)
   })
 })
