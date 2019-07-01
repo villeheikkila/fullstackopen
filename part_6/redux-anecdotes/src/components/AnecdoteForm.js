@@ -14,8 +14,7 @@ const AnecdoteForm = (props) => {
             props.deleteNotification()
         }, 5000)
         event.target.anecdote.value = ''
-        const newAnecdote = await anecdotesService.create(content)
-        props.createAnecdote(newAnecdote)
+        props.createAnecdote(content)
     }
 
     return (
