@@ -1,32 +1,21 @@
 import React from 'react';
+import { vote, createAnecdote } from './reducers/anecdoteReducer'
 
 const App = (props) => {
   const anecdotesInitial = props.store.getState()
   const anecdotes = [...anecdotesInitial].sort((a, b) => {
-    return a.votes - b.votes
+    return b.votes - a.votes
   })
 
-
-  const addNote = (event) => {
+  const addAnecdote = (event) => {
     event.preventDefault()
-    props.store.dispatch({
-      type: 'NEW_ANECDOTE',
-      data: event.target.anecdote.value
-    })
+    const content = event.target.anecdote.value
+    props.store.dispatch(createAnecdote(content))
     event.target.anecdote.value = ''
   }
 
-
   const voteId = (id) => {
-    return {
-      type: 'VOTE',
-      data: { id }
-    }
-  }
-
-  const vote = (id) => {
-    console.log('vote', id)
-    props.store.dispatch(voteId(id))
+    props.store.dispatch(vote(id))
   }
 
   return (
@@ -39,12 +28,12 @@ const App = (props) => {
           </div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => vote(anecdote.id)}>vote</button>
+            <button onClick={() => voteId(anecdote.id)}>vote</button>
           </div>
         </div>
       )}
       <h2>create new</h2>
-      <form onSubmit={addNote}>
+      <form onSubmit={addAnecdote}>
         <div><input name="anecdote" /></div>
         <button type="submit" >create</button>
       </form>
