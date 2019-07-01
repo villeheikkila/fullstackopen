@@ -5,8 +5,8 @@ import { connect } from 'react-redux'
 const Filter = (props) => {
     const handleChange = (event) => {
         props.setFilter(event.target.value)
-        console.log('event.target.value: ', event.target.value);
     }
+
     const style = {
         marginBottom: 10
     }

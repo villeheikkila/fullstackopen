@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 
 
 const AnecdoteList = (props) => {
-    const anecdotesInitial = props.anecdotes
+    const anecdotesInitial = props.visibleAnecdotes
     const anecdotes = [...anecdotesInitial].sort((a, b) => {
         return b.votes - a.votes
     })
@@ -20,7 +20,7 @@ const AnecdoteList = (props) => {
 
     return (
         <div>
-            {anecdotes.filter(e => e.content.toLowerCase().includes(props.filter.toLowerCase())).map(anecdote =>
+            {anecdotes.map(anecdote =>
                 <div key={anecdote.id}>
                     <div>
                         {anecdote.content}
@@ -35,15 +35,21 @@ const AnecdoteList = (props) => {
     )
 }
 
+const anecdotesToShow = ({ anecdotes, filter }) => {
+    if (filter === '') {
+        return anecdotes
+    } else {
+        return anecdotes.filter(e => e.content.toLowerCase().includes(filter.toLowerCase()))
+    }
+}
+
 const mapStateToProps = (state) => {
     return {
-        anecdotes: state.anecdotes,
-        filter: state.filter,
+        visibleAnecdotes: anecdotesToShow(state),
     }
 }
 
 const mapDispatchToProps = { vote, createNotification, deleteNotification }
-
 
 const ConnectedAnecdoteList = connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)
 export default ConnectedAnecdoteList

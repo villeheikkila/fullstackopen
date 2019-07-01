@@ -8,7 +8,6 @@ export const setFilter = (filter) => {
 const filterReducer = (state = "", action) => {
     switch (action.type) {
         case 'SET_FILTER':
-            console.log("moi")
             return action.data
         default:
             return state
