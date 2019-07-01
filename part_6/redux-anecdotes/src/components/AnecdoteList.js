@@ -2,7 +2,6 @@ import React from 'react';
 import { vote } from '../reducers/anecdoteReducer'
 import { createNotification, deleteNotification } from '../reducers/notificationReducer'
 
-
 const AnecdoteList = (props) => {
     const anecdotesInitial = props.store.getState().anecdotes
     const anecdotes = [...anecdotesInitial].sort((a, b) => {
@@ -20,7 +19,7 @@ const AnecdoteList = (props) => {
     return (
         <div>
             <h2>Anecdotes</h2>
-            {anecdotes.map(anecdote =>
+            {anecdotes.filter(e => e.content.toLowerCase().includes(props.store.getState().filter.toLowerCase())).map(anecdote =>
                 <div key={anecdote.id}>
                     <div>
                         {anecdote.content}
