@@ -4,11 +4,11 @@ import AnecdoteForm from './components/AnecdoteForm'
 import AnecdoteList from './components/AnecdoteList'
 import Filter from './components/Filter'
 
-const App = (props) => {
+const App = () => {
   return (
     <div>
       <h1>Anecdotes</h1>
-      <Notification store={props.store} />
+      <Notification />
       <Filter />
       <AnecdoteForm />
       <AnecdoteList />
