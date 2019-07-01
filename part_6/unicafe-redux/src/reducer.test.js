@@ -70,7 +70,6 @@ describe('unicafe reducer', () => {
       bad: 2
     }
 
-
     const action = {
       type: 'ZERO'
     }
