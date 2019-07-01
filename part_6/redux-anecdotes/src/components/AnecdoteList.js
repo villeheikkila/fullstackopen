@@ -11,10 +11,10 @@ const AnecdoteList = (props) => {
     })
 
     const voteId = (content, id) => {
-        props.store.dispatch(vote(id))
-        props.store.dispatch(createNotification(`you voted '${content}'`))
+        props.vote(id)
+        props.createNotification(`you voted '${content}'`)
         setTimeout(() => {
-            props.store.dispatch(deleteNotification())
+            props.deleteNotification()
         }, 5000)
     }
 
@@ -42,5 +42,8 @@ const mapStateToProps = (state) => {
     }
 }
 
-const ConnectedAnecdoteList = connect(mapStateToProps)(AnecdoteList)
+const mapDispatchToProps = { vote, createNotification, deleteNotification }
+
+
+const ConnectedAnecdoteList = connect(mapStateToProps, mapDispatchToProps)(AnecdoteList)
 export default ConnectedAnecdoteList
