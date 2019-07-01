@@ -11,6 +11,7 @@ const Notification = (props) => {
   if (props.notification === "") {
     return null
   }
+
   return (
     <div style={style}>
       {props.notification}
