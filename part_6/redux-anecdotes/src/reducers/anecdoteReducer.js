@@ -22,7 +22,16 @@ export const vote = (id) => {
   }
 }
 
+export const initializeAnecdotes = (anecdotes) => {
+  return {
+    type: 'INIT_ANECDOTES',
+    data: anecdotes,
+  }
+}
+
 const anecdoteReducer = (state = [], action) => {
+  console.log('state: ', state);
+
   switch (action.type) {
     case 'VOTE':
       const id = action.data.id
@@ -37,6 +46,10 @@ const anecdoteReducer = (state = [], action) => {
       )
     case 'NEW_ANECDOTE':
       return [...state, action.data]
+    case 'INIT_ANECDOTES':
+      console.log('action.data: ', action.data);
+
+      return action.data
     default:
       return state
   }
