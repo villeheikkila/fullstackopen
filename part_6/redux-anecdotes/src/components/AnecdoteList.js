@@ -3,7 +3,7 @@ import { vote } from '../reducers/anecdoteReducer'
 
 
 const AnecdoteList = (props) => {
-    const anecdotesInitial = props.store.getState()
+    const anecdotesInitial = props.store.getState().anecdotes
     const anecdotes = [...anecdotesInitial].sort((a, b) => {
         return b.votes - a.votes
     })
