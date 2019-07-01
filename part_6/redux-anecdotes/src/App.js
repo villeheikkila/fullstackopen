@@ -2,11 +2,19 @@ import React from 'react';
 
 const App = (props) => {
   const anecdotes = props.store.getState()
-  
+
+  const voteId = (id) => {
+    return {
+      type: 'VOTE',
+      data: { id }
+    }
+  }
+
   const vote = (id) => {
     console.log('vote', id)
+    props.store.dispatch(voteId(id))
   }
-  
+
   return (
     <div>
       <h2>Anecdotes</h2>
