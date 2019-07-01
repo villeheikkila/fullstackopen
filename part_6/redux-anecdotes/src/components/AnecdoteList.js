@@ -5,11 +5,6 @@ import { connect } from 'react-redux'
 
 
 const AnecdoteList = (props) => {
-    const anecdotesInitial = props.visibleAnecdotes
-    const anecdotes = [...anecdotesInitial].sort((a, b) => {
-        return b.votes - a.votes
-    })
-
     const voteId = (content, id) => {
         props.vote(id)
         props.createNotification(`you voted '${content}'`)
@@ -20,7 +15,7 @@ const AnecdoteList = (props) => {
 
     return (
         <div>
-            {anecdotes.map(anecdote =>
+            {props.visibleAnecdotes.map(anecdote =>
                 <div key={anecdote.id}>
                     <div>
                         {anecdote.content}
@@ -36,10 +31,14 @@ const AnecdoteList = (props) => {
 }
 
 const anecdotesToShow = ({ anecdotes, filter }) => {
+    const anecdotesSorted = [...anecdotes].sort((a, b) => {
+        return b.votes - a.votes
+    })
+
     if (filter === '') {
-        return anecdotes
+        return anecdotesSorted
     } else {
-        return anecdotes.filter(e => e.content.toLowerCase().includes(filter.toLowerCase()))
+        return anecdotesSorted.filter(e => e.content.toLowerCase().includes(filter.toLowerCase()))
     }
 }
 
