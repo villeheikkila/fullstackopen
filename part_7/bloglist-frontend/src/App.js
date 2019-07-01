@@ -5,16 +5,15 @@ import loginService from './services/login'
 import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { connect } from 'react-redux'
+import { createNotification } from './reducers/notificationReducer'
 import { useField } from './hooks'
 
-const App = () => {
+const App = (props) => {
     const [username] = useField('text')
     const [password] = useField('password')
     const [blogs, setBlogs] = useState([])
     const [user, setUser] = useState(null)
-    const [notification, setNotification] = useState({
-        message: null
-    })
 
     useEffect(() => {
         blogService.getAll().then(blogs => {
@@ -32,8 +31,7 @@ const App = () => {
     }, [])
 
     const notify = (message, type = 'success') => {
-        setNotification({ message, type })
-        setTimeout(() => setNotification({ message: null }), 10000)
+        props.createNotification({ message: message, type: type }, 2)
     }
 
     const handleLogin = async (event) => {
@@ -86,7 +84,7 @@ const App = () => {
             <div>
                 <h2>log in to application</h2>
 
-                <Notification notification={notification} />
+                <Notification />
 
                 <form onSubmit={handleLogin}>
                     <div>
@@ -111,7 +109,7 @@ const App = () => {
         <div>
             <h2>blogs</h2>
 
-            <Notification notification={notification} />
+            <Notification />
 
             <p>{user.name} logged in</p>
             <button onClick={handleLogout}>logout</button>
@@ -133,5 +131,14 @@ const App = () => {
         </div>
     )
 }
+const mapStateToProps = (state) => {
+    console.log('state: ', state);
 
-export default App
+    return {
+        notification: state.notification,
+    }
+}
+const mapDispatchToProps = { createNotification }
+
+const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
+export default ConnectedApp
