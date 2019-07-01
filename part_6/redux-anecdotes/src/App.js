@@ -1,7 +1,10 @@
 import React from 'react';
 
 const App = (props) => {
-  const anecdotes = props.store.getState()
+  const anecdotesInitial = props.store.getState()
+  const anecdotes = [...anecdotesInitial].sort((a, b) => {
+    return a.votes - b.votes
+  })
 
 
   const addNote = (event) => {
