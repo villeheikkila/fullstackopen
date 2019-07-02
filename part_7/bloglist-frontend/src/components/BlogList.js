@@ -2,6 +2,7 @@ import React from 'react'
 import Blog from './Blog'
 import NewBlog from './NewBlog'
 import Togglable from './Togglable'
+import { Table } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
 import { createBlog, deleteBlog, updateBlog } from '../reducers/blogReducer'
@@ -41,21 +42,27 @@ const BlogList = (props) => {
     return (
         <div>
             <h2>blogs</h2>
-
             <Togglable buttonLabel='create new' ref={newBlogRef}>
                 <NewBlog createBlog={handleCreateBlog} />
             </Togglable>
-
-            {props.blogs.sort(byLikes).map(blog =>
-                <Blog
-                    key={blog.id}
-                    blog={blog}
-                    like={likeBlog}
-                    remove={removeBlog}
-                    user={props.user}
-                    creator={blog.user.username === props.user.username}
-                />
-            )}
+            <Table striped celled>
+                <Table.Body>
+                    {props.blogs.sort(byLikes).map(blog =>
+                        <Table.Row key={blog.id}>
+                            <Table.Cell>
+                                <Blog
+                                    key={blog.id}
+                                    blog={blog}
+                                    like={likeBlog}
+                                    remove={removeBlog}
+                                    user={props.user}
+                                    creator={blog.user.username === props.user.username}
+                                />
+                            </Table.Cell>
+                        </Table.Row>
+                    )}
+                </Table.Body>
+            </Table>
         </div>
     )
 }

@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import blogService from './services/blogs'
 import Notification from './components/Notification'
 import BlogList from './components/BlogList'
-
+import { Container } from 'semantic-ui-react'
 import Menu from './components/Menu'
 import { connect } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
@@ -52,7 +52,7 @@ const App = (props) => {
 
     if (props.user === null) {
         return (
-            <div>
+            <Container>
                 <h2>log in to application</h2>
 
                 <Notification />
@@ -67,12 +67,12 @@ const App = (props) => {
                     </div>
                     <button type="submit">kirjaudu</button>
                 </form>
-            </div>
+            </Container>
         )
     }
 
     return (
-        <div>
+        <Container>
             <Router>
                 <Menu user={props.user} handleLogout={handleLogout} />
                 <Notification />
@@ -80,8 +80,7 @@ const App = (props) => {
                     <BlogList />
                 } />
             </Router>
-
-        </div>
+        </Container>
     )
 }
 const mapStateToProps = (state) => {

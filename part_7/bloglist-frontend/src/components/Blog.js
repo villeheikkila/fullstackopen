@@ -4,14 +4,6 @@ import PropTypes from 'prop-types'
 const Blog = ({ blog, like, remove, creator }) => {
     const [expanded, setExpanded] = useState(false)
 
-    const blogStyle = {
-        paddingTop: 10,
-        paddingLeft: 2,
-        border: 'solid',
-        borderWidth: 1,
-        marginBottom: 5
-    }
-
     const details = () => (
         <div className='details'>
             <a href={blog.url}>{blog.url}</a>
@@ -24,7 +16,7 @@ const Blog = ({ blog, like, remove, creator }) => {
     )
 
     return (
-        <div style={blogStyle}>
+        <div>
             <div onClick={() => setExpanded(!expanded)} className='name'>
                 {blog.title} {blog.author}
             </div>
