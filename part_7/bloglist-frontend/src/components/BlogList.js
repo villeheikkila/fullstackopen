@@ -9,7 +9,6 @@ import { createBlog, deleteBlog, updateBlog } from '../reducers/blogReducer'
 
 
 const BlogList = (props) => {
-
     const notify = (message, type = 'success') => {
         props.createNotification({ message: message, type: type }, 2)
     }
@@ -33,7 +32,6 @@ const BlogList = (props) => {
             notify(`blog ${blog.title} by ${blog.author} removed!`, 'success')
         }
     }
-
 
     const newBlogRef = React.createRef()
 

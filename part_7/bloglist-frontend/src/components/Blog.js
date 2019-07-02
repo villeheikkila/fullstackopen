@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
+import { Button } from 'semantic-ui-react'
 
 const Blog = ({ blog, like, remove, creator }) => {
     const [expanded, setExpanded] = useState(false)
@@ -8,10 +9,10 @@ const Blog = ({ blog, like, remove, creator }) => {
         <div className='details'>
             <a href={blog.url}>{blog.url}</a>
             <div>{blog.likes} likes
-                <button onClick={() => like(blog)}>like</button>
+                <Button onClick={() => like(blog)}>like</Button>
             </div>
             <div>added by {blog.user.name}</div>
-            {creator && (<button onClick={() => remove(blog)}>remove </button>)}
+            {creator && (<Button onClick={() => remove(blog)}>remove </Button>)}
         </div>
     )
 

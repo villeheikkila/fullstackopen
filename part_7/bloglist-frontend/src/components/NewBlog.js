@@ -1,5 +1,6 @@
 import React from 'react'
 import { useField } from '../hooks'
+import { Form, Button } from 'semantic-ui-react'
 
 const NewBlog = (props) => {
     const [title, titleReset] = useField('text')
@@ -18,25 +19,31 @@ const NewBlog = (props) => {
         urlReset()
     }
 
+    const style = {
+        backgroundColor: '#EA7171',
+        color: '#fff',
+        margin: '5px 0px'
+    }
+
     return (
         <div>
             <h2>create new</h2>
 
-            <form onSubmit={handleSubmit}>
-                <div>
-                    title:
+            <Form onSubmit={handleSubmit}>
+                <Form.Field>
+                    <label>title:</label>
                     <input {...title} />
-                </div>
-                <div>
-                    author:
+                </Form.Field>
+                <Form.Field>
+                    <label>author:</label>
                     <input {...author} />
-                </div>
-                <div>
-                    url:
+                </Form.Field>
+                <Form.Field>
+                    <label>url:</label>
                     <input {...url} />
-                </div>
-                <button type='submit'>create</button>
-            </form>
+                </Form.Field>
+                <Button style={style} type='submit'>create</Button>
+            </Form>
         </div>
     )
 }
