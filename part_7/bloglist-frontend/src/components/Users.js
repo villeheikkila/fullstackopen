@@ -1,10 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Table } from 'semantic-ui-react'
-import {
-    BrowserRouter as Router,
-    Route, Link, Redirect, withRouter
-} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const Users = (props) => {
     return (
@@ -39,7 +36,6 @@ const mapStateToProps = (state) => {
         users: state.users
     }
 }
-const mapDispatchToProps = {}
 
-const ConnectedUsers = connect(mapStateToProps, mapDispatchToProps)(Users)
+const ConnectedUsers = connect(mapStateToProps)(Users)
 export default ConnectedUsers

@@ -5,6 +5,7 @@ import BlogList from './components/BlogList'
 import { Container } from 'semantic-ui-react'
 import NavBar from './components/NavBar'
 import Login from './components/Login'
+import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
 import { connect } from 'react-redux'
@@ -40,6 +41,9 @@ const App = (props) => {
     const usersById = (id) =>
         props.users.find(a => a.id === id)
 
+    const blogsById = (id) =>
+        props.blogs.find(a => a.id === id)
+
     return (
         <Container>
             <Router>
@@ -54,6 +58,9 @@ const App = (props) => {
                 <Route exact path="/users/:id" render={({ match }) =>
                     <User user={usersById(match.params.id)} />}
                 />
+                <Route exact path="/blogs/:id" render={({ match }) =>
+                    <Blog blog={blogsById(match.params.id)} />}
+                />
             </Router>
         </Container>
     )
@@ -61,7 +68,8 @@ const App = (props) => {
 const mapStateToProps = (state) => {
     return {
         user: state.user,
-        users: state.users
+        users: state.users,
+        blogs: state.blogs
     }
 }
 const mapDispatchToProps = { initializeBlogs, initializeUsers, setUser }

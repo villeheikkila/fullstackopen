@@ -13,12 +13,8 @@ const Login = (props) => {
         event.preventDefault()
         const response = await props.login({ username: username.value, password: password.value })
         if (response !== undefined) {
-            notify('wrong username or password', 'error')
+            props.createNotification({ message: 'wrong username or password', type: 'error' }, 2)
         }
-    }
-
-    const notify = (message, type = 'success') => {
-        props.createNotification({ message: message, type: type }, 2)
     }
 
     return (
@@ -39,6 +35,7 @@ const Login = (props) => {
         </div>
     )
 }
+
 const mapStateToProps = (state) => {
     return {
         user: state.user,
