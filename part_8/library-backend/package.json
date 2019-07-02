@@ -12,7 +12,10 @@
   "dependencies": {
     "apollo-server": "^2.7.0-alpha.3",
     "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
     "graphql": "^14.4.1",
+    "mongoose": "^5.6.2",
+    "mongoose-unique-validator": "^2.0.3",
     "nodemon": "^1.19.1"
   }
 }
