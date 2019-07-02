@@ -1,0 +1,17 @@
+{
+  "name": "books",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "nodemon library-backend.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "apollo-server": "^2.7.0-alpha.3",
+    "graphql": "^14.4.1",
+    "nodemon": "^1.19.1"
+  }
+}
