@@ -3,7 +3,6 @@ import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
 import { gql } from 'apollo-boost'
-import { Query, ApolloConsumer } from 'react-apollo'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 
 const ALL_AUTHORS = gql`
@@ -40,6 +39,15 @@ const CREATE_BOOK = gql`
   }
 `
 
+const EDIT_AUTHOR = gql`
+  mutation editAuthor($name: String!, $born: Int!) {
+    editAuthor(name: $name, setBornTo: $born)  {
+      name
+      born
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const books = useQuery(ALL_BOOKS)
@@ -54,6 +62,11 @@ const App = () => {
     refetchQueries: [{ query: ALL_BOOKS }]
   })
 
+  const [editAuthor] = useMutation(EDIT_AUTHOR, {
+    onError: handleError,
+    refetchQueries: [{ query: ALL_AUTHORS }]
+  })
+
   return (
     <div>
       <div>
@@ -63,7 +76,7 @@ const App = () => {
       </div>
 
       <Authors
-        show={page === 'authors'} result={authors}
+        show={page === 'authors'} result={authors} editAuthor={editAuthor}
       />
 
       <Books
