@@ -1,7 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Table } from 'semantic-ui-react'
-
+import {
+    BrowserRouter as Router,
+    Route, Link, Redirect, withRouter
+} from 'react-router-dom'
 
 const Users = (props) => {
     return (
@@ -18,12 +21,11 @@ const Users = (props) => {
                     {props.users.map(user =>
                         <Table.Row key={user.id}>
                             <Table.Cell >
-                                {user.name}
+                                <Link to={`/users/${user.id}`}>{user.name}</Link>
                             </Table.Cell>
                             <Table.Cell >
                                 {user.blogs.length}
                             </Table.Cell>
-
                         </Table.Row>
                     )}
                 </Table.Body>
