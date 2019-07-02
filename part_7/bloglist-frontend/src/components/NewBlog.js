@@ -25,15 +25,15 @@ const NewBlog = (props) => {
             <form onSubmit={handleSubmit}>
                 <div>
                     title:
-          <input {...title} />
+                    <input {...title} />
                 </div>
                 <div>
                     author:
-          <input {...author} />
+                    <input {...author} />
                 </div>
                 <div>
                     url:
-          <input {...url} />
+                    <input {...url} />
                 </div>
                 <button type='submit'>create</button>
             </form>

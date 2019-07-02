@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import NewBlog from './components/NewBlog'
@@ -16,6 +16,8 @@ const App = (props) => {
 
     useEffect(() => {
         props.initializeBlogs()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+
     }, [])
 
     useEffect(() => {
@@ -25,6 +27,7 @@ const App = (props) => {
             props.setUser(user).then(blogService.setToken(user.token)
             )
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const notify = (message, type = 'success') => {
@@ -35,7 +38,7 @@ const App = (props) => {
         event.preventDefault()
         const response = await props.login({ username: username.value, password: password.value })
         if (response !== undefined) {
-            notify("wrong username or password", "error")
+            notify('wrong username or password', 'error')
         }
     }
 
@@ -48,7 +51,7 @@ const App = (props) => {
     const handleCreateBlog = async (blog) => {
         newBlogRef.current.toggleVisibility()
         props.createBlog(blog)
-        notify(`a new blog ${blog.title} by ${blog.author} added`, "success")
+        notify(`a new blog ${blog.title} by ${blog.author} added`, 'success')
     }
 
     const likeBlog = async (blog) => {
@@ -61,7 +64,7 @@ const App = (props) => {
         const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
         if (ok) {
             props.deleteBlog(blog)
-            notify(`blog ${blog.title} by ${blog.author} removed!`, "success")
+            notify(`blog ${blog.title} by ${blog.author} removed!`, 'success')
         }
     }
 
@@ -75,11 +78,11 @@ const App = (props) => {
                 <form onSubmit={handleLogin}>
                     <div>
                         käyttäjätunnus
-            <input {...username} />
+                        <input {...username} />
                     </div>
                     <div>
                         salasana
-            <input {...password} />
+                        <input {...password} />
                     </div>
                     <button type="submit">kirjaudu</button>
                 </form>

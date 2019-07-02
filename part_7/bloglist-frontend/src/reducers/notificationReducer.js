@@ -19,14 +19,14 @@ export const deleteNotification = () => {
     }
 }
 
-const notificationReducer = (state = "", action) => {
+const notificationReducer = (state = '', action) => {
     switch (action.type) {
-        case 'SET_NOTIFICATION':
-            return action.data
-        case 'DELETE_NOTIFICATION':
-            return ""
-        default:
-            return state
+    case 'SET_NOTIFICATION':
+        return action.data
+    case 'DELETE_NOTIFICATION':
+        return ''
+    default:
+        return state
     }
 }
 

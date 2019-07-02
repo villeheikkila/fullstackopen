@@ -16,7 +16,7 @@ const Blog = ({ blog, like, remove, creator }) => {
         <div className='details'>
             <a href={blog.url}>{blog.url}</a>
             <div>{blog.likes} likes
-        <button onClick={() => like(blog)}>like</button>
+                <button onClick={() => like(blog)}>like</button>
             </div>
             <div>added by {blog.user.name}</div>
             {creator && (<button onClick={() => remove(blog)}>remove </button>)}
@@ -32,7 +32,6 @@ const Blog = ({ blog, like, remove, creator }) => {
         </div>
     )
 }
-
 
 Blog.propTypes = {
     blog: PropTypes.object.isRequired,
