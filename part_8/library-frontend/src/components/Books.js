@@ -5,8 +5,13 @@ const Books = ({ result, show }) => {
     return null
   }
 
+  if (result.loading) {
+    return <div>loading...</div>
+  }
 
-  const books = []
+  const books = result.data.allBooks
+  console.log('books: ', books);
+
 
   return (
     <div>
