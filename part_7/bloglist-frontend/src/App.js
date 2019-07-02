@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-import Blog from './components/Blog'
 import blogService from './services/blogs'
-import NewBlog from './components/NewBlog'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable'
+import BlogList from './components/BlogList'
+
+import Menu from './components/Menu'
 import { connect } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
 import { login, logout, setUser } from './reducers/userReducer'
 import { initializeBlogs, createBlog, deleteBlog, updateBlog } from './reducers/blogReducer'
 import { useField } from './hooks'
-
+import {
+    BrowserRouter as Router, Route
+} from 'react-router-dom'
 const App = (props) => {
     const [username] = useField('text')
     const [password] = useField('password')
@@ -48,33 +50,12 @@ const App = (props) => {
         window.localStorage.removeItem('loggedBlogAppUser')
     }
 
-    const handleCreateBlog = async (blog) => {
-        newBlogRef.current.toggleVisibility()
-        props.createBlog(blog)
-        notify(`a new blog ${blog.title} by ${blog.author} added`, 'success')
-    }
-
-    const likeBlog = async (blog) => {
-        const likedBlog = { ...blog, likes: blog.likes + 1 }
-        props.updateBlog(likedBlog)
-        notify(`blog ${blog.title} by ${blog.author} liked!`)
-    }
-
-    const removeBlog = async (blog) => {
-        const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
-        if (ok) {
-            props.deleteBlog(blog)
-            notify(`blog ${blog.title} by ${blog.author} removed!`, 'success')
-        }
-    }
-
     if (props.user === null) {
         return (
             <div>
                 <h2>log in to application</h2>
 
                 <Notification />
-
                 <form onSubmit={handleLogin}>
                     <div>
                         käyttäjätunnus
@@ -90,33 +71,16 @@ const App = (props) => {
         )
     }
 
-    const newBlogRef = React.createRef()
-
-    const byLikes = (b1, b2) => b2.likes - b1.likes
-
     return (
         <div>
-            <h2>blogs</h2>
+            <Router>
+                <Menu user={props.user} handleLogout={handleLogout} />
+                <Notification />
+                <Route exact path="/" render={() =>
+                    <BlogList />
+                } />
+            </Router>
 
-            <Notification />
-
-            <p>{props.user.name} logged in</p>
-            <button onClick={handleLogout}>logout</button>
-
-            <Togglable buttonLabel='create new' ref={newBlogRef}>
-                <NewBlog createBlog={handleCreateBlog} />
-            </Togglable>
-
-            {props.blogs.sort(byLikes).map(blog =>
-                <Blog
-                    key={blog.id}
-                    blog={blog}
-                    like={likeBlog}
-                    remove={removeBlog}
-                    user={props.user}
-                    creator={blog.user.username === props.user.username}
-                />
-            )}
         </div>
     )
 }
