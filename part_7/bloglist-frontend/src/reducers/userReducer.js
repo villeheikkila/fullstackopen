@@ -36,10 +36,8 @@ export const logout = () => {
 }
 
 const userReducer = (state = null, action) => {
-    console.log('state: ', state)
     switch (action.type) {
     case 'SET_USER':
-        console.log('heii', action.data)
         return action.data
     case 'LOGOUT':
         return null

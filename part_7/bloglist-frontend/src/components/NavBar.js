@@ -27,10 +27,10 @@ const NavBar = (props) => {
     return (
         <Menu inverted>
             <Menu.Item link>
-                <Link to="/">blogs</Link>
+                <Link to="/">Blogs</Link>
             </Menu.Item>
             <Menu.Item link>
-                <Link to="/about">about</Link>
+                <Link to="/users">Users</Link>
             </Menu.Item>
             <Menu.Item link>
                 <em style={style}>{props.user.name} logged in </em>

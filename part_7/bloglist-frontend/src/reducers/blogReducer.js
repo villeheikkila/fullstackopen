@@ -44,15 +44,16 @@ export const deleteBlog = (blog) => {
 
 export const initializeBlogs = () => {
     return async dispatch => {
-        const anecdotes = await blogService.getAll()
+        const blogs = await blogService.getAll()
+        console.log('blogs: ', blogs)
         dispatch({
             type: 'INIT_BLOGS',
-            data: anecdotes,
+            data: blogs,
         })
     }
 }
 
-const anecdoteReducer = (state = [], action) => {
+const blogReducer = (state = [], action) => {
     switch (action.type) {
     case 'NEW_BLOG':
         return [...state, action.data]
@@ -71,4 +72,4 @@ const anecdoteReducer = (state = [], action) => {
     }
 }
 
-export default anecdoteReducer
+export default blogReducer
