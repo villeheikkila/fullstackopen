@@ -4,6 +4,7 @@ import Books from './components/Books'
 import NewBook from './components/NewBook'
 import { gql } from 'apollo-boost'
 import { Query, ApolloConsumer } from 'react-apollo'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 
 const ALL_AUTHORS = gql`
 {
@@ -25,8 +26,33 @@ const ALL_BOOKS = gql`
 }
 `
 
+const CREATE_BOOK = gql`
+  mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [String]!) {
+    addBook(
+      title: $title,
+      author: $author,
+      published: $published,
+      genres: $genres
+    ) {
+      title,
+      author
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
+  const books = useQuery(ALL_BOOKS)
+  const authors = useQuery(ALL_AUTHORS)
+
+  const handleError = (error) => {
+    console.log('error: ', error);
+  }
+
+  const [addBook] = useMutation(CREATE_BOOK, {
+    onError: handleError,
+    refetchQueries: [{ query: ALL_BOOKS }]
+  })
 
   return (
     <div>
@@ -36,32 +62,16 @@ const App = () => {
         <button onClick={() => setPage('add')}>add book</button>
       </div>
 
-      <ApolloConsumer>
-        {(client =>
-          <Query query={ALL_AUTHORS}>
-            {(result) =>
-              <Authors
-                show={page === 'authors'} result={result} client={client}
-              />
-            }
-          </Query>
-        )}
-      </ApolloConsumer>
+      <Authors
+        show={page === 'authors'} result={authors}
+      />
 
-      <ApolloConsumer>
-        {(client =>
-          <Query query={ALL_BOOKS}>
-            {(result) =>
-              <Books
-                show={page === 'books'} result={result} client={client}
-              />
-            }
-          </Query>
-        )}
-      </ApolloConsumer>
+      <Books
+        show={page === 'books'} result={books}
+      />
 
       <NewBook
-        show={page === 'add'}
+        show={page === 'add'} addBook={addBook}
       />
 
     </div>

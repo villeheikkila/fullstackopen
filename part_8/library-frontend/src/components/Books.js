@@ -10,8 +10,6 @@ const Books = ({ result, show }) => {
   }
 
   const books = result.data.allBooks
-  console.log('books: ', books);
-
 
   return (
     <div>

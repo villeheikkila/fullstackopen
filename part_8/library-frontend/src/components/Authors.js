@@ -10,7 +10,6 @@ const Authors = ({ result, show }) => {
   }
 
   const authors = result.data.allAuthors
-  console.log("result", result.data.allAuthors)
 
   return (
     <div>
