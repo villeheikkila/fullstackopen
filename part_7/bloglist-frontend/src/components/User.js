@@ -5,6 +5,7 @@ const User = (props) => {
     if (props.user === undefined) {
         return null
     }
+
     return (
         <div>
             <h1>props.name</h1>
