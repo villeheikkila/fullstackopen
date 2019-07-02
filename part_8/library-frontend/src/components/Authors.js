@@ -14,6 +14,10 @@ const Authors = (props) => {
 
   const authors = props.result.data.allAuthors
 
+  const handleChange = (event) => {
+    setName(event.target.value)
+  }
+
   const submit = async (e) => {
     e.preventDefault()
 
@@ -51,11 +55,12 @@ const Authors = (props) => {
       <h2>Set birthyear</h2>
       <form onSubmit={submit}>
         <div>
-          name
-          <input
-            value={name}
-            onChange={({ target }) => setName(target.value)}
-          />
+          select author:
+          <select value={name} onChange={handleChange}>
+            {authors.map(a =>
+              <option value={a.name}>{a.name}</option>
+            )}
+          </select>
         </div>
         born
           <input
