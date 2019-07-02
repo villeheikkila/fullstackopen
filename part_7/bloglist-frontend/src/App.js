@@ -7,18 +7,16 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { connect } from 'react-redux'
 import { createNotification } from './reducers/notificationReducer'
+import { initializeBlogs, createBlog, deleteBlog, updateBlog } from './reducers/blogReducer'
 import { useField } from './hooks'
 
 const App = (props) => {
     const [username] = useField('text')
     const [password] = useField('password')
-    const [blogs, setBlogs] = useState([])
     const [user, setUser] = useState(null)
 
     useEffect(() => {
-        blogService.getAll().then(blogs => {
-            setBlogs(blogs)
-        })
+        props.initializeBlogs()
     }, [])
 
     useEffect(() => {
@@ -56,26 +54,23 @@ const App = (props) => {
         window.localStorage.removeItem('loggedBlogAppUser')
     }
 
-    const createBlog = async (blog) => {
-        const createdBlog = await blogService.create(blog)
+    const handleCreateBlog = async (blog) => {
         newBlogRef.current.toggleVisibility()
-        setBlogs(blogs.concat(createdBlog))
-        notify(`a new blog ${createdBlog.title} by ${createdBlog.author} added`)
+        props.createBlog(blog)
+        notify(`a new blog ${blog.title} by ${blog.author} added`, "success")
     }
 
     const likeBlog = async (blog) => {
         const likedBlog = { ...blog, likes: blog.likes + 1 }
-        const updatedBlog = await blogService.update(likedBlog)
-        setBlogs(blogs.map(b => b.id === blog.id ? updatedBlog : b))
-        notify(`blog ${updatedBlog.title} by ${updatedBlog.author} liked!`)
+        props.updateBlog(likedBlog)
+        notify(`blog ${blog.title} by ${blog.author} liked!`)
     }
 
     const removeBlog = async (blog) => {
         const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
         if (ok) {
-            const updatedBlog = await blogService.remove(blog)
-            setBlogs(blogs.filter(b => b.id !== blog.id))
-            notify(`blog ${updatedBlog.title} by ${updatedBlog.author} removed!`)
+            props.deleteBlog(blog)
+            notify(`blog ${blog.title} by ${blog.author} removed!`, "success")
         }
     }
 
@@ -115,10 +110,10 @@ const App = (props) => {
             <button onClick={handleLogout}>logout</button>
 
             <Togglable buttonLabel='create new' ref={newBlogRef}>
-                <NewBlog createBlog={createBlog} />
+                <NewBlog createBlog={handleCreateBlog} />
             </Togglable>
 
-            {blogs.sort(byLikes).map(blog =>
+            {props.blogs.sort(byLikes).map(blog =>
                 <Blog
                     key={blog.id}
                     blog={blog}
@@ -132,13 +127,12 @@ const App = (props) => {
     )
 }
 const mapStateToProps = (state) => {
-    console.log('state: ', state);
-
     return {
         notification: state.notification,
+        blogs: state.blogs
     }
 }
-const mapDispatchToProps = { createNotification }
+const mapDispatchToProps = { createNotification, initializeBlogs, createBlog, deleteBlog, updateBlog }
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 export default ConnectedApp
