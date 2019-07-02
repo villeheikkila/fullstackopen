@@ -19,7 +19,7 @@ export const deleteNotification = () => {
     }
 }
 
-const notificationReducer = (state = { message: "Hei", type: "Success" }, action) => {
+const notificationReducer = (state = "", action) => {
     switch (action.type) {
         case 'SET_NOTIFICATION':
             return action.data
