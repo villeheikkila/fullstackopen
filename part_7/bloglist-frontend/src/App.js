@@ -5,9 +5,11 @@ import BlogList from './components/BlogList'
 import { Container } from 'semantic-ui-react'
 import NavBar from './components/NavBar'
 import Login from './components/Login'
+import Users from './components/Users'
 import { connect } from 'react-redux'
 import { setUser } from './reducers/userReducer'
 import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/usersReducer'
 import {
     BrowserRouter as Router, Route
 } from 'react-router-dom'
@@ -15,6 +17,7 @@ import {
 const App = (props) => {
     useEffect(() => {
         props.initializeBlogs()
+        props.initializeUsers()
         const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
@@ -42,6 +45,9 @@ const App = (props) => {
                 <Route exact path="/" render={() =>
                     <BlogList />
                 } />
+                <Route exact path="/users" render={() =>
+                    <Users />
+                } />
             </Router>
         </Container>
     )
@@ -51,7 +57,7 @@ const mapStateToProps = (state) => {
         user: state.user
     }
 }
-const mapDispatchToProps = { initializeBlogs, setUser }
+const mapDispatchToProps = { initializeBlogs, initializeUsers, setUser }
 
 const ConnectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
 export default ConnectedApp
