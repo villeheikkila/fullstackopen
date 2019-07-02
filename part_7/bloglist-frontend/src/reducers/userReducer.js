@@ -2,7 +2,6 @@ import loginService from '../services/login'
 import blogService from '../services/blogs'
 
 export const setUser = (content) => {
-    console.log('content: ', content);
     return async dispatch => {
         dispatch({
             type: 'SET_USER',
@@ -37,15 +36,15 @@ export const logout = () => {
 }
 
 const userReducer = (state = null, action) => {
-    console.log('state: ', state);
+    console.log('state: ', state)
     switch (action.type) {
-        case 'SET_USER':
-            console.log("heii", action.data)
-            return action.data
-        case 'LOGOUT':
-            return null
-        default:
-            return state
+    case 'SET_USER':
+        console.log('heii', action.data)
+        return action.data
+    case 'LOGOUT':
+        return null
+    default:
+        return state
     }
 }
 

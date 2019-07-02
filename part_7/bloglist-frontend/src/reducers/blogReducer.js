@@ -32,9 +32,9 @@ export const updateBlog = (blog) => {
 }
 
 export const deleteBlog = (blog) => {
-    console.log('blasdsadasdsaog: ', blog);
+    console.log('blasdsadasdsaog: ', blog)
     return async dispatch => {
-        const updatedBlog = await blogService.remove(blog)
+        await blogService.remove(blog)
         dispatch({
             type: 'DELETE_BLOG',
             data: blog
@@ -54,18 +54,20 @@ export const initializeBlogs = () => {
 
 const anecdoteReducer = (state = [], action) => {
     switch (action.type) {
-        case 'NEW_BLOG':
-            return [...state, action.data]
-        case 'UPDATE_BLOG':
-            const updatedBlogs = state.map(b => b.id === action.data.id ? action.data : b)
-            return updatedBlogs
-        case 'DELETE_BLOG':
-            const newBlogs = state.filter(b => b.id !== action.data.id)
-            return newBlogs
-        case 'INIT_BLOGS':
-            return action.data
-        default:
-            return state
+    case 'NEW_BLOG':
+        return [...state, action.data]
+    case 'UPDATE_BLOG': {
+        const updatedBlogs = state.map(b => b.id === action.data.id ? action.data : b)
+        return updatedBlogs
+    }
+    case 'DELETE_BLOG': {
+        const newBlogs = state.filter(b => b.id !== action.data.id)
+        return newBlogs
+    }
+    case 'INIT_BLOGS':
+        return action.data
+    default:
+        return state
     }
 }
 

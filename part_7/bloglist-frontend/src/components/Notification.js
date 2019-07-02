@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 const Notification = (props) => {
-    if (props.notification === "") {
+    if (props.notification === '') {
         return null
     }
     const style = {
