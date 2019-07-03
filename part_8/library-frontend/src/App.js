@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
+import RecommendedBooks from './components/RecommendedBooks'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import { gql } from 'apollo-boost'
@@ -21,6 +22,7 @@ const ALL_BOOKS = gql`
   allBooks {
     title
     published
+    genres
     author {
       name
     }
@@ -61,12 +63,20 @@ const LOGIN = gql`
   }
 `
 
+const GET_USER = gql`{
+  me {
+    username
+    favoriteGenre
+  }
+}`
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
 
   const books = useQuery(ALL_BOOKS)
   const authors = useQuery(ALL_AUTHORS)
+  const user = useQuery(GET_USER)
 
   const handleError = (error) => {
     console.log('error: ', error);
@@ -103,6 +113,7 @@ const App = () => {
           <button onClick={() => setPage('books')}>books</button>
           <button onClick={() => setPage('login')}>login</button>
         </div>
+
         <Authors
           show={page === 'authors'} result={authors} editAuthor={editAuthor} token={token}
         />
@@ -114,6 +125,7 @@ const App = () => {
         <Login
           show={page === 'login'} login={login} setToken={(token) => setToken(token)}
         />
+
       </div>
     )
   }
@@ -124,6 +136,7 @@ const App = () => {
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
+        <button onClick={() => setPage('recommendedBooks')}>recommended</button>
         <button onClick={() => setPage('add')}>add book</button>
         <button onClick={() => logout()}>logout</button>
       </div>
@@ -134,6 +147,10 @@ const App = () => {
 
       <Books
         show={page === 'books'} result={books}
+      />
+
+      <RecommendedBooks
+        show={page === 'recommendedBooks'} result={books} user={user.data.me}
       />
 
       <NewBook
