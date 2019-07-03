@@ -137,7 +137,6 @@ const resolvers = {
 
             try {
                 const response = await book.save()
-                console.log('response: ', response);
                 pubsub.publish('BOOK_ADDED', { bookAdded: response })
                 return response
 
