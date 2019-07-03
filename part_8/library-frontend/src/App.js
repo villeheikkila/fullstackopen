@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import NewBook from './components/NewBook'
+import Login from './components/Login'
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
 
 const ALL_AUTHORS = gql`
 {
@@ -65,11 +66,18 @@ const App = () => {
   const [token, setToken] = useState(null)
 
   const books = useQuery(ALL_BOOKS)
-  console.log('books: ', books);
   const authors = useQuery(ALL_AUTHORS)
 
   const handleError = (error) => {
     console.log('error: ', error);
+  }
+
+  const client = useApolloClient()
+
+  const logout = () => {
+    setToken(null)
+    localStorage.clear()
+    client.resetStore()
   }
 
   const [login] = useMutation(LOGIN, {
@@ -86,12 +94,38 @@ const App = () => {
     refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
+
+  if (!token) {
+    return (
+      <div>
+        <div>
+          <button onClick={() => setPage('authors')}>authors</button>
+          <button onClick={() => setPage('books')}>books</button>
+          <button onClick={() => setPage('login')}>login</button>
+        </div>
+        <Authors
+          show={page === 'authors'} result={authors} editAuthor={editAuthor} token={token}
+        />
+
+        <Books
+          show={page === 'books'} result={books}
+        />
+
+        <Login
+          show={page === 'login'} login={login} setToken={(token) => setToken(token)}
+        />
+      </div>
+    )
+  }
+
+
   return (
     <div>
       <div>
         <button onClick={() => setPage('authors')}>authors</button>
         <button onClick={() => setPage('books')}>books</button>
         <button onClick={() => setPage('add')}>add book</button>
+        <button onClick={() => logout()}>logout</button>
       </div>
 
       <Authors
