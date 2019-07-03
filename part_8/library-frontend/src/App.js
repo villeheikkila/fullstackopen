@@ -5,7 +5,17 @@ import RecommendedBooks from './components/RecommendedBooks'
 import NewBook from './components/NewBook'
 import Login from './components/Login'
 import { gql } from 'apollo-boost'
-import { useQuery, useMutation, useApolloClient } from '@apollo/react-hooks'
+import { useQuery, useMutation, useSubscription, useApolloClient } from '@apollo/react-hooks'
+
+const BOOK_DETAILS = gql`
+fragment BookDetails on Book {
+  title
+  published
+  genres
+  author {
+    name
+  }
+}`
 
 const ALL_AUTHORS = gql`
 {
@@ -39,6 +49,8 @@ const CREATE_BOOK = gql`
       genres: $genres
     ) {
       title,
+      published,
+      genres,
       author {
         name
       }
@@ -70,6 +82,13 @@ const GET_USER = gql`{
   }
 }`
 
+const BOOK_ADDED = gql`
+subscription {    
+  bookAdded {...BookDetails }  
+  }  
+  ${BOOK_DETAILS}
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
   const [token, setToken] = useState(null)
@@ -79,7 +98,7 @@ const App = () => {
   const user = useQuery(GET_USER)
 
   const handleError = (error) => {
-    console.log('error: ', error);
+    window.alert(`${error} added`);
   }
 
   const client = useApolloClient()
@@ -94,11 +113,36 @@ const App = () => {
     onError: handleError
   })
 
+  const includedIn = (set, object) =>
+    set.map(p => p.title).includes(object.title)
+
+
+  const updateCacheWith = (addedBook) => {
+    const dataInStore = client.readQuery({ query: ALL_BOOKS })
+    if (!includedIn(dataInStore.allBooks, addedBook)) {
+      dataInStore.allBooks.push(addedBook)
+      client.writeQuery({
+        query: ALL_BOOKS,
+        data: dataInStore
+      })
+    }
+  }
+
+  useSubscription(BOOK_ADDED, {
+    onSubscriptionData: ({ subscriptionData }) => {
+      const addedBook = subscriptionData.data.bookAdded
+      window.alert(`${addedBook.title} added`)
+      updateCacheWith(addedBook)
+    }
+  })
+
   const [addBook] = useMutation(CREATE_BOOK, {
     onError: handleError,
     update: (store, response) => {
       const dataInStore = store.readQuery({ query: ALL_BOOKS })
-      dataInStore.allPersons.push(response.data.addPerson)
+      if (!includedIn(dataInStore.allBooks, response.data.addBook)) {
+        dataInStore.allBooks.push(response.data.addBook)
+      }
       store.writeQuery({
         query: ALL_BOOKS,
         data: dataInStore
@@ -108,14 +152,7 @@ const App = () => {
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     onError: handleError,
-    update: (store, response) => {
-      const dataInStore = store.readQuery({ query: ALL_AUTHORS })
-      dataInStore.allPersons.push(response.data.addPerson)
-      store.writeQuery({
-        query: ALL_AUTHORS,
-        data: dataInStore
-      })
-    }
+    refetchQueries: [{ query: ALL_AUTHORS }]
   })
 
   if (!token) {

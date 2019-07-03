@@ -97,6 +97,17 @@ const resolvers = {
     Author: {
         bookCount: (root) => {
             return Book.countDocuments({ author: root })
+            // Exercise 8.5 which was not updated to use MongoDB
+            // 
+            // allBooks: (root, args) => {
+            // let filteredBooks = books
+            // if (args.author !== undefined) {
+            //     filteredBooks = filteredBooks.filter(p => p.author === args.author)
+            // }
+            // if (args.genre !== undefined) {
+            //     filteredBooks = filteredBooks.filter(p => p.genres.includes(args.genre))
+            // }
+            // return filteredBooks
         }
     },
     Mutation: {
@@ -126,6 +137,7 @@ const resolvers = {
 
             try {
                 const response = await book.save()
+                console.log('response: ', response);
                 pubsub.publish('BOOK_ADDED', { bookAdded: response })
                 return response
 
