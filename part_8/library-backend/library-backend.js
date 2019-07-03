@@ -3,6 +3,8 @@ const mongoose = require('mongoose')
 require('dotenv').config()
 const Book = require('./models/book')
 const Author = require('./models/author')
+const User = require('./models/user')
+const jwt = require('jsonwebtoken')
 
 mongoose.set('useFindAndModify', false)
 
@@ -60,7 +62,7 @@ const typeDefs = gql`
     editAuthor(    
         name: String!    
         setBornTo: Int!  
-    ): Author,
+    ): Author
     createUser(
         username: String!
         favoriteGenre: String!
@@ -95,9 +97,9 @@ const resolvers = {
         addBook: async (root, args, context) => {
             const currentUser = context.currentUser
 
-            // if (!currentUser) {
-            //     throw new AuthenticationError("not authenticated")
-            // }
+            if (!currentUser) {
+                throw new AuthenticationError("not authenticated")
+            }
 
             const authorExists = await Author.findOne({ name: args.author })
 
@@ -127,9 +129,9 @@ const resolvers = {
         editAuthor: async (root, args, context) => {
             const currentUser = context.currentUser
 
-            // if (!currentUser) {
-            //     throw new AuthenticationError("not authenticated")
-            // }
+            if (!currentUser) {
+                throw new AuthenticationError("not authenticated")
+            }
 
             const author = await Author.findOne({ name: args.name })
             author.born = args.setBornTo
@@ -147,7 +149,7 @@ const resolvers = {
             }
         },
         createUser: (root, args) => {
-            const user = new User({ username: args.username })
+            const user = new User({ username: args.username, favoriteGenre: args.favoriteGenre })
 
             return user.save()
                 .catch(error => {
@@ -184,7 +186,7 @@ const server = new ApolloServer({
         const auth = req ? req.headers.authorization : null
         if (auth && auth.toLowerCase().startsWith('bearer ')) {
             const decodedToken = jwt.verify(auth.substring(7), JWT_SECRET)
-            const currentUser = await User.findById(decodedToken.id).populate('friends')
+            const currentUser = await User.findOne({ username: decodedToken.username })
             return { currentUser }
         }
     }
