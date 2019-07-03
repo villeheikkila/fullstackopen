@@ -55,7 +55,6 @@ const typeDefs = gql`
 
 const resolvers = {
     Query: {
-        hello: () => { return "world" },
         bookCount: () => { return Book.collection.countDocuments() },
         authorCount: () => { return Author.collection.countDocuments() },
         allBooks: async (root, args) => {
