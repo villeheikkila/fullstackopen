@@ -19,8 +19,10 @@ const ALL_BOOKS = gql`
 {
   allBooks {
     title
-    author
     published
+    author {
+      name
+    }
   }
 }
 `
@@ -34,7 +36,9 @@ const CREATE_BOOK = gql`
       genres: $genres
     ) {
       title,
-      author
+      author {
+        name
+      }
     }
   }
 `
@@ -48,14 +52,29 @@ const EDIT_AUTHOR = gql`
   }
 `
 
+const LOGIN = gql`
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password)  {
+      value
+    }
+  }
+`
+
 const App = () => {
   const [page, setPage] = useState('authors')
+  const [token, setToken] = useState(null)
+
   const books = useQuery(ALL_BOOKS)
+  console.log('books: ', books);
   const authors = useQuery(ALL_AUTHORS)
 
   const handleError = (error) => {
     console.log('error: ', error);
   }
+
+  const [login] = useMutation(LOGIN, {
+    onError: handleError
+  })
 
   const [addBook] = useMutation(CREATE_BOOK, {
     onError: handleError,
