@@ -18,7 +18,7 @@ mongoose.connect(MONGODB_URI, { useNewUrlParser: true })
 const typeDefs = gql`
   type Author {
     name: String!
-    id: ID
+    id: ID!
     born: Int
     bookCount: Int
   }
@@ -74,7 +74,7 @@ const resolvers = {
     },
     Author: {
         bookCount: (root) => {
-            return Book.countDocuments({ author: root.name })
+            return Book.countDocuments({ author: root })
         }
     },
     Mutation: {
@@ -119,7 +119,6 @@ const resolvers = {
                     invalidArgs: args,
                 })
             }
-
         }
     }
 }
