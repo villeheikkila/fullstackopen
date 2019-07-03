@@ -96,14 +96,27 @@ const App = () => {
 
   const [addBook] = useMutation(CREATE_BOOK, {
     onError: handleError,
-    refetchQueries: [{ query: ALL_BOOKS }]
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: ALL_BOOKS })
+      dataInStore.allPersons.push(response.data.addPerson)
+      store.writeQuery({
+        query: ALL_BOOKS,
+        data: dataInStore
+      })
+    }
   })
 
   const [editAuthor] = useMutation(EDIT_AUTHOR, {
     onError: handleError,
-    refetchQueries: [{ query: ALL_AUTHORS }]
+    update: (store, response) => {
+      const dataInStore = store.readQuery({ query: ALL_AUTHORS })
+      dataInStore.allPersons.push(response.data.addPerson)
+      store.writeQuery({
+        query: ALL_AUTHORS,
+        data: dataInStore
+      })
+    }
   })
-
 
   if (!token) {
     return (

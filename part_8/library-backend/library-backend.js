@@ -5,6 +5,8 @@ const Book = require('./models/book')
 const Author = require('./models/author')
 const User = require('./models/user')
 const jwt = require('jsonwebtoken')
+const { PubSub } = require('apollo-server')
+const pubsub = new PubSub()
 
 mongoose.set('useFindAndModify', false)
 
@@ -72,6 +74,10 @@ const typeDefs = gql`
         password: String!
   ): Token
   }
+
+  type Subscription {
+  bookAdded: Book!
+}    
 `
 
 const resolvers = {
@@ -119,7 +125,10 @@ const resolvers = {
             const book = new Book({ ...args, author: foundAuthor })
 
             try {
-                return await book.save()
+                const response = await book.save()
+                pubsub.publish('BOOK_ADDED', { bookAdded: response })
+                return response
+
             } catch (error) {
                 throw new UserInputError(error.message, {
                     invalidArgs: args,
@@ -172,7 +181,12 @@ const resolvers = {
 
             return { value: jwt.sign(userForToken, JWT_SECRET) }
         },
-    }
+    },
+    Subscription: {
+        bookAdded: {
+            subscribe: () => pubsub.asyncIterator(['BOOK_ADDED'])
+        },
+    },
 }
 
 const server = new ApolloServer({
@@ -192,6 +206,7 @@ const server = new ApolloServer({
     }
 })
 
-server.listen().then(({ url }) => {
+server.listen().then(({ url, subscriptionsUrl }) => {
     console.log(`Server ready at ${url}`)
+    console.log(`Subscriptions ready at ${subscriptionsUrl}`)
 })
