@@ -77,14 +77,7 @@ const resolvers = {
         bookCount: () => { return Book.collection.countDocuments() },
         authorCount: () => { return Author.collection.countDocuments() },
         allBooks: async (root, args) => {
-            let filteredBooks = await Book.find({})
-            if (args.author !== undefined) {
-                filteredBooks = filteredBooks.filter(p => p.name === args.author)
-            }
-            if (args.genre !== undefined) {
-                filteredBooks = filteredBooks.filter(p => p.genres.includes(args.genre))
-            }
-            return filteredBooks
+            return await Book.find({}).populate('author')
         },
         allAuthors: () => {
             return Author.find({})
@@ -102,9 +95,9 @@ const resolvers = {
         addBook: async (root, args, context) => {
             const currentUser = context.currentUser
 
-            if (!currentUser) {
-                throw new AuthenticationError("not authenticated")
-            }
+            // if (!currentUser) {
+            //     throw new AuthenticationError("not authenticated")
+            // }
 
             const authorExists = await Author.findOne({ name: args.author })
 
@@ -134,9 +127,9 @@ const resolvers = {
         editAuthor: async (root, args, context) => {
             const currentUser = context.currentUser
 
-            if (!currentUser) {
-                throw new AuthenticationError("not authenticated")
-            }
+            // if (!currentUser) {
+            //     throw new AuthenticationError("not authenticated")
+            // }
 
             const author = await Author.findOne({ name: args.name })
             author.born = args.setBornTo
