@@ -58,8 +58,8 @@ const resolvers = {
         hello: () => { return "world" },
         bookCount: () => { return Book.collection.countDocuments() },
         authorCount: () => { return Author.collection.countDocuments() },
-        allBooks: (root, args) => {
-            let filteredBooks = Book.find({})
+        allBooks: async (root, args) => {
+            let filteredBooks = await Book.find({})
             if (args.author !== undefined) {
                 filteredBooks = filteredBooks.filter(p => p.name === args.author)
             }
@@ -74,7 +74,7 @@ const resolvers = {
     },
     Author: {
         bookCount: (root) => {
-            return books.filter(p => p.author === root.name).length
+            return Book.countDocuments({ author: root.name })
         }
     },
     Mutation: {
@@ -94,28 +94,32 @@ const resolvers = {
             }
 
             const foundAuthor = await Author.findOne({ name: args.author })
-            console.log('foundAuthor: ', foundAuthor);
             const book = new Book({ ...args, author: foundAuthor })
 
             try {
-                const response = await book.save()
-                return response
+                return await book.save()
             } catch (error) {
                 throw new UserInputError(error.message, {
                     invalidArgs: args,
                 })
             }
         },
-        editAuthor: (root, args) => {
-            const author = authors.find(p => p.name === args.name)
+        editAuthor: async (root, args) => {
+            const author = await Author.findOne({ name: args.name })
+            author.born = args.setBornTo
 
             if (!author) {
                 return null
             }
 
-            const updatedAuthor = { ...author, born: args.setBornTo }
-            authors = authors.map(p => p.name === args.name ? updatedAuthor : p)
-            return updatedAuthor
+            try {
+                return await author.save()
+            } catch (error) {
+                throw new UserInputError(error.message, {
+                    invalidArgs: args,
+                })
+            }
+
         }
     }
 }
