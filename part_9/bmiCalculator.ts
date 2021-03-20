@@ -28,20 +28,21 @@ const calculateBmi = (height: number, weight: number) => {
   return `${prefix} (${bmi.toFixed(2)})`;
 };
 
-const parseArguments = () => {
-  if (!process.argv[2] || !process.argv[3]) {
+export const parseAndCalculateBmi = (arg1: any, arg2: any) => {
+  if (!arg1 || !arg2) {
     throw "You need to provide both height and weight";
   }
 
-  const height = parseFloat(process.argv[2]);
-  const weight = parseFloat(process.argv[3]);
-  console.log("weight: ", weight);
+  const height = parseFloat(arg1);
+  const weight = parseFloat(arg2);
 
   if (Number.isNaN(height) || Number.isNaN(weight)) {
     throw "Both height and weight need to be numbers";
   }
 
-  console.log(calculateBmi(height, weight));
+  return calculateBmi(height, weight);
 };
 
-parseArguments();
+if (process.argv.length > 2) {
+  console.log(parseAndCalculateBmi(process.argv[2], process.argv[3]));
+}
