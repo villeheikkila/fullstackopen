@@ -1,6 +1,5 @@
-const express = require("express");
+import express from "express";
 const app = express();
-
 app.use(express.json());
 
 import { Request, Response } from "express";
@@ -21,11 +20,10 @@ app.get("/bmi", ({ query }: Request, res: Response) => {
   }
 });
 
-app.post("/exercises", (req: Request, res: Response) => {
+app.post("/exercises", ({ body }: Request, res: Response) => {
   try {
-    res.send(
-      parseInputCalculateExercises(req.body.target, req.body.daily_exercises)
-    );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    res.send(parseInputCalculateExercises(body?.target, body?.daily_exercises));
   } catch (error) {
     res.send(error);
   }
