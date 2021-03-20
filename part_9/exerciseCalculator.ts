@@ -24,7 +24,7 @@ const calculateExercises = (exercises: number[], target: number): Review => {
   const totalHours = exercises.reduce((total, hours) => total + hours, 0);
 
   const average = totalHours / periodLength;
-  const rating = target >= average + 0.5 ? 3 : target >= average ? 2 : 1;
+  const rating = average >= target + 0.5 ? 3 : average >= target ? 2 : 1;
 
   return {
     periodLength,
@@ -37,21 +37,26 @@ const calculateExercises = (exercises: number[], target: number): Review => {
   };
 };
 
-const parseArgs = () => {
-  const [, , targetRaw, ...args] = process.argv;
-
-  if (!targetRaw || args.length === 0) {
-    throw "You need to provide both target and at least one exercise session";
+export const parseInputCalculateExercises = (
+  targetRaw: any,
+  exercisesRaw: any[]
+) => {
+  if (!targetRaw || exercisesRaw.length === 0) {
+    throw "parameters missing";
   }
 
-  const exercises = args.map((e) => parseFloat(e));
+  const exercises = exercisesRaw.map((e) => parseFloat(e));
   const target = parseFloat(targetRaw);
 
   if (Number.isNaN(target) || exercises.some((e) => isNaN(e))) {
-    throw "All exercises and the target must be numbers";
+    throw "malformatted parameters";
   }
 
-  console.log(calculateExercises(exercises, target));
+  return calculateExercises(exercises, target);
 };
 
-parseArgs();
+if (process.argv.length > 2) {
+  const [, , target, ...exercises] = process.argv;
+
+  console.log(parseInputCalculateExercises(target, exercises));
+}
