@@ -4,7 +4,7 @@ import cors from "cors";
 import diagnosesJSON from "./data/diagnoses.json";
 import patientsJSON from "./data/patients.json";
 
-const tempPatients: Patient[] = [...patientsJSON];
+const tempPatients: Patient[] = [...(patientsJSON as Patient[])];
 
 import { v1 as uuid } from "uuid";
 
@@ -20,12 +20,19 @@ interface Diagnose {
   latin?: string;
 }
 
+enum Gender {
+  female = "female",
+  male = "male",
+}
+
+type BirthDate = `${number}-${number}-${number}`;
+
 interface Patient {
   id: string;
   name: string;
-  dateOfBirth: string;
+  dateOfBirth: BirthDate;
   ssn: string;
-  gender: string;
+  gender: Gender;
   occupation: string;
 }
 
@@ -39,6 +46,66 @@ app.get("/api/diagnoses", (_req, res) => {
   res.send(diagnoses);
 });
 
+const parseGender = (gender: unknown): Gender => {
+  if (gender === "male") {
+    return Gender.male;
+  }
+
+  if (gender === "female") {
+    return Gender.female;
+  }
+
+  throw new Error("Gender can only be female or male, it was " + gender);
+};
+
+const isString = (text: unknown): text is string => {
+  return typeof text === "string" || text instanceof String;
+};
+
+const parseName = (name: unknown): string => {
+  if (!name || !isString(name)) {
+    throw new Error("Incorrect or missing name");
+  }
+
+  return name;
+};
+
+const parseSSN = (ssn: unknown): string => {
+  if (!ssn || !isString(ssn)) {
+    throw new Error("Incorrect or missing ssn");
+  }
+
+  return ssn;
+};
+
+const parseOccupation = (occupation: unknown): string => {
+  if (!occupation || !isString(occupation)) {
+    throw new Error("Incorrect or missing occupation");
+  }
+
+  return occupation;
+};
+
+const parseDateOfBirth = (dateOfBirth: unknown): BirthDate => {
+  if (!dateOfBirth || !isString(dateOfBirth)) {
+    throw new Error("Incorrect or missing date of birth");
+  }
+
+  const splitDateOfBirth = dateOfBirth.split("-");
+
+  if (splitDateOfBirth.length !== 3) {
+    throw new Error("Date is in incorrect format");
+  }
+
+  const dateInNumbers = splitDateOfBirth.map((e) => parseInt(e));
+
+  if (dateInNumbers.some((e) => isNaN(e))) {
+    throw new Error("Date is in incorrect format");
+  }
+
+  return `${dateInNumbers[0]}-${dateInNumbers[1]}-${dateInNumbers[2]}` as BirthDate;
+};
+
 const getNonSensitiveEntriesFromPatient = (
   patients: Patient[]
 ): Omit<Patient, "ssn">[] =>
@@ -49,6 +116,22 @@ const getNonSensitiveEntriesFromPatient = (
     gender,
     occupation,
   }));
+
+type Fields = {
+  name: unknown;
+  dateOfBirth: unknown;
+  gender: unknown;
+  ssn: unknown;
+  occupation: unknown;
+};
+
+const parseValidPatient = (object: Fields): Omit<Patient, "id"> => ({
+  name: parseName(object.name),
+  dateOfBirth: parseDateOfBirth(object.dateOfBirth),
+  gender: parseGender(object.gender),
+  ssn: parseSSN(object.ssn),
+  occupation: parseOccupation(object.occupation),
+});
 
 app.get("/api/patients", (_req, res) => {
   res.send(getNonSensitiveEntriesFromPatient(tempPatients));
@@ -63,7 +146,14 @@ const createPatient = (patient: Omit<Patient, "id">): Patient => {
 };
 
 app.post("/api/patients", ({ body }, res) => {
-  res.send(createPatient(body));
+  try {
+    const parsedPatient = parseValidPatient(body);
+    const createdPatient = createPatient(parsedPatient);
+    res.send(createdPatient);
+  } catch (error) {
+    console.log("error: ", error);
+    res.send(error);
+  }
 });
 
 app.listen(PORT, () => {
