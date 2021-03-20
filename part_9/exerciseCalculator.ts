@@ -37,4 +37,21 @@ const calculateExercises = (exercises: number[], target: number): Review => {
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+const parseArgs = () => {
+  const [, , targetRaw, ...args] = process.argv;
+
+  if (!targetRaw || args.length === 0) {
+    throw "You need to provide both target and at least one exercise session";
+  }
+
+  const exercises = args.map((e) => parseFloat(e));
+  const target = parseFloat(targetRaw);
+
+  if (Number.isNaN(target) || exercises.some((e) => isNaN(e))) {
+    throw "All exercises and the target must be numbers";
+  }
+
+  console.log(calculateExercises(exercises, target));
+};
+
+parseArgs();

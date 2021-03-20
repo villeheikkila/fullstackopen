@@ -28,4 +28,20 @@ const calculateBmi = (height: number, weight: number) => {
   return `${prefix} (${bmi.toFixed(2)})`;
 };
 
-console.log(calculateBmi(200, 74));
+const parseArguments = () => {
+  if (!process.argv[2] || !process.argv[3]) {
+    throw "You need to provide both height and weight";
+  }
+
+  const height = parseFloat(process.argv[2]);
+  const weight = parseFloat(process.argv[3]);
+  console.log("weight: ", weight);
+
+  if (Number.isNaN(height) || Number.isNaN(weight)) {
+    throw "Both height and weight need to be numbers";
+  }
+
+  console.log(calculateBmi(height, weight));
+};
+
+parseArguments();
