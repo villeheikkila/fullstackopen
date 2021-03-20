@@ -4,6 +4,10 @@ import cors from "cors";
 import diagnosesJSON from "./data/diagnoses.json";
 import patientsJSON from "./data/patients.json";
 
+const tempPatients: Patient[] = [...patientsJSON];
+
+import { v1 as uuid } from "uuid";
+
 const app = express();
 app.use(express.json());
 app.use(cors());
@@ -47,8 +51,19 @@ const getNonSensitiveEntriesFromPatient = (
   }));
 
 app.get("/api/patients", (_req, res) => {
-  const patients: Patient[] = patientsJSON;
-  res.send(getNonSensitiveEntriesFromPatient(patients));
+  res.send(getNonSensitiveEntriesFromPatient(tempPatients));
+});
+
+const createPatient = (patient: Omit<Patient, "id">): Patient => {
+  const id = uuid();
+  const newPatient = { id, ...patient };
+  tempPatients.push(newPatient);
+
+  return newPatient;
+};
+
+app.post("/api/patients", ({ body }, res) => {
+  res.send(createPatient(body));
 });
 
 app.listen(PORT, () => {
