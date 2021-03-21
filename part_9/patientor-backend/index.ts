@@ -27,7 +27,43 @@ enum Gender {
 
 type BirthDate = `${number}-${number}-${number}`;
 
-export interface Entry {}
+interface BaseEntry {
+  id: string;
+  description: string;
+  date: string;
+  specialist: string;
+  diagnosisCodes?: string[];
+}
+
+export enum HealthCheckRating {
+  "Healthy" = 0,
+  "LowRisk" = 1,
+  "HighRisk" = 2,
+  "CriticalRisk" = 3,
+}
+
+interface SickLeave {
+  startDate: string;
+  endDate: string;
+}
+
+interface OccupationalHealthcareEntry extends BaseEntry {
+  type: "OccupationalHealthcare";
+  employerName: string;
+  sickLeave: SickLeave;
+}
+
+interface Discharge {
+  date: string;
+  criteria: string;
+}
+interface HospitalEntry extends BaseEntry {
+  type: "Hospital";
+  id: string;
+  discharge: Discharge;
+}
+
+export type Entry = HospitalEntry | OccupationalHealthcareEntry;
 
 interface Patient {
   id: string;
@@ -146,7 +182,7 @@ app.get("/api/patients", (_req, res) => {
 
 const createPatient = (patient: Omit<Patient, "id" | "entries">): Patient => {
   const id = uuid();
-  const entries: string[] = [];
+  const entries: Entry[] = [];
   const newPatient = { id, ...patient, entries };
   tempPatients.push(newPatient);
 
