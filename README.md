@@ -1,18 +1,18 @@
-## [Full Stack Open 2019](https://fullstackopen.com/en/)
+## [Full Stack Open](https://fullstackopen.com/en/)
 
-This course serves as an introduction to modern web application development with JavaScript. The main focus is on building single page applications with ReactJS that use REST APIs built with Node.js. The course also contains a section on GraphQL, a modern alternative to REST APIs.
+Frontend for the patientor project in round 9 is hosted [here](https://github.com/villeheikkila/patientor).
 
-### Exercises done per round
+### Status
 
-| Part  | Exercises|
-| ---   | ---     |
-| 0     | 6/6     |
-| 1     | 14/14   |
-| 2     | 20/20   |
-| 3     | 20/20   |
-| 4     | 21/21   |
-| 5     | 21/21   |        
-| 6     | 21/21   |        
-| 7     | 14/20   |        
-| 8     | 22/26   |        
-| __Total__ | __161/171__ |        
+| Part | Status |
+| ---- | ------ |
+| 0    | ✅     |
+| 1    | ✅     |
+| 2    | ✅     |
+| 3    | ✅     |
+| 4    | ✅     |
+| 5    | ✅     |
+| 6    | ✅     |
+| 7    | ✅     |
+| 8    | ✅     |
+| 9    | ✅     |
