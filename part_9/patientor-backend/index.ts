@@ -5,6 +5,7 @@ import diagnosesJSON from "./data/diagnoses.json";
 import patientsJSON from "./data/patients.json";
 
 const tempPatients: Patient[] = [...(patientsJSON as Patient[])];
+const diagnoses: Diagnose[] = [...diagnosesJSON];
 
 import { v1 as uuid } from "uuid";
 
@@ -193,6 +194,10 @@ app.get("/api/patients/:id", (req, res) => {
   const id = req.params.id;
   const patientById = tempPatients.find((patient) => patient.id === id);
   res.send(patientById);
+});
+
+app.get("/api/diagnosis", (_req, res) => {
+  res.send(diagnoses);
 });
 
 app.post("/api/patients", ({ body }, res) => {
