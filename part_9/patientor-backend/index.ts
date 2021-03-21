@@ -177,6 +177,153 @@ const parseValidPatient = (
   occupation: parseOccupation(object.occupation),
 });
 
+const parseEntryType = (type: unknown) => {
+  if (type === "OccupationalHealthcare") {
+    return "OccupationalHealthcare" as const;
+  } else if (type === "Hospital") {
+    return "Hospital" as const;
+  } else {
+    throw "No valid entry type found";
+  }
+};
+
+interface BaseEntryFields {
+  type: unknown;
+  description: unknown;
+  id: unknown;
+  date: unknown;
+  specialist: unknown;
+  diagnosisCodes: unknown;
+  discharge?: unknown;
+  employerName?: unknown;
+  sickLeave?: unknown;
+}
+
+const parseId = (id: unknown): string => {
+  if (!id || !isString(id)) {
+    throw new Error("Incorrect or missing id");
+  }
+
+  return id;
+};
+
+const parseSpecialist = (specialist: unknown): string => {
+  if (!specialist || !isString(specialist)) {
+    throw new Error("Incorrect or missing specialist");
+  }
+
+  return specialist;
+};
+
+const parseDescription = (description: unknown): string => {
+  if (!description || !isString(description)) {
+    throw new Error("Incorrect or missing description");
+  }
+
+  return description;
+};
+
+const parseCriteria = (criteria: unknown): string => {
+  if (!criteria || !isString(criteria)) {
+    throw new Error("Incorrect or missing criteria");
+  }
+
+  return criteria;
+};
+
+const parseDate = (date: unknown): string => {
+  if (!date || !isString(date)) {
+    throw new Error("Incorrect or missing date");
+  }
+
+  return date;
+};
+
+const parseEmployerName = (employerName: unknown): string => {
+  if (!employerName || !isString(employerName)) {
+    throw new Error("Incorrect or missing employer name");
+  }
+
+  return employerName;
+};
+
+const parseDischarge = (discharge: unknown): Discharge => {
+  if (!(typeof discharge === "object" && discharge !== null)) {
+    throw new Error("Incorrect or missing discharge");
+  }
+
+  if (!("date" in discharge && "criteria" in discharge)) {
+    throw new Error("Discharge object doesn't include the required fields");
+  }
+
+  const dischargeObject = discharge as { date: unknown; criteria: unknown };
+
+  return {
+    criteria: parseCriteria(dischargeObject.criteria),
+    date: parseDate(dischargeObject.date),
+  };
+};
+
+const parseSickLeave = (sickLeave: unknown): SickLeave => {
+  if (!(typeof sickLeave === "object" && sickLeave !== null)) {
+    throw new Error("Incorrect or missing sick leave property");
+  }
+
+  if (!("startDate" in sickLeave && "endDate" in sickLeave)) {
+    throw new Error("sick leave object doesn't include the required fields");
+  }
+
+  const sickLeaveObject = sickLeave as { date: unknown; criteria: unknown };
+
+  return {
+    startDate: parseCriteria(sickLeaveObject.criteria),
+    endDate: parseDate(sickLeaveObject.date),
+  };
+};
+
+const parseDiagnosisCodes = (codes: unknown): string[] => {
+  if (codes === undefined) return [] as string[];
+
+  if (Array.isArray(codes) === false) {
+    throw new Error("Diagnosis codes should be either undefined or an array");
+  }
+
+  if (!(codes as string[]).every((code) => isString(code))) {
+    throw new Error("All codes must be strings");
+  }
+
+  return codes as string[];
+};
+
+const parseEntry = (object: BaseEntryFields): Entry => {
+  const commonProperties = {
+    type: parseEntryType(object.type),
+    id: parseId(object.id),
+    description: parseDescription(object.description),
+    date: parseDate(object.date),
+    specialist: parseSpecialist(object.specialist),
+    diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
+  };
+
+  switch (commonProperties.type) {
+    case "Hospital": {
+      return {
+        ...commonProperties,
+        type: "Hospital",
+        discharge: parseDischarge(object?.discharge),
+      };
+    }
+    case "OccupationalHealthcare": {
+      return {
+        ...commonProperties,
+        type: "OccupationalHealthcare",
+        employerName: parseEmployerName(object.employerName),
+        sickLeave: parseSickLeave(object.sickLeave),
+      };
+    }
+  }
+};
+
 app.get("/api/patients", (_req, res) => {
   res.send(getNonSensitiveEntriesFromPatient(tempPatients));
 });
@@ -196,6 +343,24 @@ app.get("/api/patients/:id", (req, res) => {
   res.send(patientById);
 });
 
+app.post("/api/patients/:id/entries", (req, res) => {
+  try {
+    const id = req.params.id;
+    const patientIndex = tempPatients.findIndex((patient) => patient.id === id);
+    if (patientIndex === -1) throw "Patient doesn't exist";
+
+    const { entries, ...rest } = tempPatients[patientIndex];
+    const newEntry = parseEntry({ ...req.body, id: uuid() });
+
+    const updatedPatient = { ...rest, entries: [...entries, newEntry] };
+    tempPatients[patientIndex] = updatedPatient;
+
+    res.send(newEntry);
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 app.get("/api/diagnosis", (_req, res) => {
   res.send(diagnoses);
 });
@@ -206,7 +371,7 @@ app.post("/api/patients", ({ body }, res) => {
     const createdPatient = createPatient(parsedPatient);
     res.send(createdPatient);
   } catch (error) {
-    console.log("error: ", error);
+    console.error("error: ", error);
     res.send(error);
   }
 });
