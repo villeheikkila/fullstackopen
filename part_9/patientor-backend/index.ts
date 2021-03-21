@@ -27,6 +27,8 @@ enum Gender {
 
 type BirthDate = `${number}-${number}-${number}`;
 
+export interface Entry {}
+
 interface Patient {
   id: string;
   name: string;
@@ -34,7 +36,10 @@ interface Patient {
   ssn: string;
   gender: Gender;
   occupation: string;
+  entries: Entry[];
 }
+
+export type PublicPatient = Omit<Patient, "ssn" | "entries">;
 
 app.get("/api/ping", (_req, res) => {
   console.log("someone pinged here");
@@ -108,7 +113,7 @@ const parseDateOfBirth = (dateOfBirth: unknown): BirthDate => {
 
 const getNonSensitiveEntriesFromPatient = (
   patients: Patient[]
-): Omit<Patient, "ssn">[] =>
+): PublicPatient[] =>
   patients.map(({ id, name, dateOfBirth, gender, occupation }) => ({
     id,
     name,
@@ -125,7 +130,9 @@ type Fields = {
   occupation: unknown;
 };
 
-const parseValidPatient = (object: Fields): Omit<Patient, "id"> => ({
+const parseValidPatient = (
+  object: Fields
+): Omit<Patient, "id" | "entries"> => ({
   name: parseName(object.name),
   dateOfBirth: parseDateOfBirth(object.dateOfBirth),
   gender: parseGender(object.gender),
@@ -137,13 +144,20 @@ app.get("/api/patients", (_req, res) => {
   res.send(getNonSensitiveEntriesFromPatient(tempPatients));
 });
 
-const createPatient = (patient: Omit<Patient, "id">): Patient => {
+const createPatient = (patient: Omit<Patient, "id" | "entries">): Patient => {
   const id = uuid();
-  const newPatient = { id, ...patient };
+  const entries: string[] = [];
+  const newPatient = { id, ...patient, entries };
   tempPatients.push(newPatient);
 
   return newPatient;
 };
+
+app.get("/api/patients/:id", (req, res) => {
+  const id = req.params.id;
+  const patientById = tempPatients.find((patient) => patient.id === id);
+  res.send(patientById);
+});
 
 app.post("/api/patients", ({ body }, res) => {
   try {
